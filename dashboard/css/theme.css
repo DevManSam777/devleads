@@ -1,0 +1,78 @@
+:root {
+    --primary: #4361ee;
+    --secondary: #3f37c9;
+    --success: #4cc9f0;
+    --danger: #f72585;
+    --warning: #f8961e;
+    --info: #4895ef;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --add-btn: #f5f7fb;
+    --border-color: #ced4da;
+    --box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.05);
+    --hover-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+    --background-color: #f5f7fb;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --text-muted: #6c757d;
+    --card-border-radius: 0.8rem;
+    --transition-speed: 0.3s;
+    --sidebar-width: 25rem;
+    --sidebar-collapsed-width: 7rem;
+    --sidebar-bg: #f1f3f4;
+    --sidebar-text: #495057;
+    --sidebar-link: #6c757d;
+    --sidebar-border: #e9ecef;
+    --sidebar-active: #f8f9fa;
+    --sidebar-active-text: #4361ee;
+    --sidebar-active-border: #dee2e6;
+    --table-stripe: rgba(0, 0, 0, 0.02);
+    --table-hover: rgba(0, 0, 0, 0.05);
+    --input-bg: #ffffff;
+    --input-text: #333333;
+    --input-border: #ced4da;
+    --input-focus: #3498db;
+    --toast-bg: #4caf50;
+    --toast-text: #ffffff;
+    --toast-border: #2e7d32;
+    --toast-deletion-bg: #ff5722;
+  }
+  
+  /* Dark Mode Variables */
+  [data-theme="dark"] {
+    --primary: #5c7cfa;
+    --secondary: #5c6bc0;
+    --success: #4fd1c5;
+    --danger: #f06595;
+    --warning: #f9a826;
+    --info: #74c0fc;
+    --light: #343a40;
+    --dark: #f8f9fa;
+    --gray: #adb5bd;
+    --add-btn: #f5f7fb;
+    --border-color: #495057;
+    --box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.2);
+    --hover-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
+    --background-color: #1a1d21;
+    --card-background: #2d3238;
+    --text-color: #e9ecef;
+    --text-muted: #adb5bd;
+    --sidebar-bg: #111418;
+    --sidebar-text: #e9ecef;
+    --sidebar-link: #ced4da;
+    --sidebar-border: #2d3238;
+    --sidebar-active: rgba(92, 124, 250, 0.15);
+    --sidebar-active-text: #5c7cfa;
+    --sidebar-active-border: rgba(92, 124, 250, 0.3);
+    --table-stripe: rgba(255, 255, 255, 0.03);
+    --table-hover: rgba(255, 255, 255, 0.05);
+    --input-bg: #343a40;
+    --input-text: #e9ecef;
+    --input-border: #495057;
+    --input-focus: #5c7cfa;
+    --toast-bg: #2e7d32;
+    --toast-text: #ffffff;
+    --toast-border: #1b5e20;
+    --toast-deletion-bg: #d84315;
+  }

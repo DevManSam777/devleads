@@ -1,0 +1,219 @@
+:root {
+  --primary-color: #4361ee;
+  --text-color: #333;
+  --background-color: #f4f4f9;
+  --card-background: #ffffff;
+  --error-color: #f72585;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --success-color: #4caf50;
+  --input-background: #ffffff;
+  --input-border: #e0e0e0;
+  --input-text: #333;
+  --icon-color: #999;
+  --forgot-password-color: #4361ee;
+  --modal-background: #ffffff;
+  --transition-speed: 0.3s;
+}
+
+/* Dark mode variables */
+[data-theme="dark"] {
+  --primary-color: #4361ee;
+  --text-color: #e9ecef;
+  --background-color: #1a1d21;
+  --card-background: #2d3238;
+  --error-color: #f06595;
+  --border-color: #495057;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --success-color: #4fd1c5;
+  --input-background: #343a40;
+  --input-border: #495057;
+  --input-text: #e9ecef;
+  --icon-color: #adb5bd;
+  --forgot-password-color: #4361ee;
+  --modal-background: #2d3238;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Nunito Sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  padding: 20px;
+  transition: background-color var(--transition-speed);
+}
+
+.login-container {
+  background: var(--card-background);
+  padding: 40px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px var(--shadow-color);
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  transition: background-color var(--transition-speed),
+    box-shadow var(--transition-speed);
+  color: var(--text-color);
+}
+
+.login-logo {
+  text-align: center;
+}
+
+.login-logo svg {
+  width: 60px;
+  height: 60px;
+  fill: var(--primary-color);
+}
+
+.login-container h1 {
+  margin-bottom: 25px;
+  font-size: 2.8rem;
+  text-align: center;
+  color: var(--text-color);
+  position: relative;
+}
+
+.login-container h1::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 3px;
+  background-color: var(--primary-color);
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-color);
+  font-size: 1.6rem;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  font-size: 1.6rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  transition: border-color 0.2s;
+  background-color: var(--input-background);
+  color: var(--input-text);
+}
+
+.input-with-icon input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--icon-color);
+  font-size: 16px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.login-btn:hover {
+  background-color: #3f37c9;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  text-align: center;
+  padding: 12px;
+  border-radius: 5px;
+  background-color: rgba(220, 53, 69, 0.08);
+  display: none;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.forgot-password {
+  display: block;
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  color: var(--forgot-password-color);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 20px;
+  }
+
+  .input-with-icon input {
+    padding: 10px 10px 10px 36px;
+  }
+
+  .login-btn {
+    padding: 10px;
+  }
+}

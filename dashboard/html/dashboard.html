@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevLeads Dashboard</title>
+    <script type="module">
+      import { auth, signOut } from "/dashboard/js/authApi.js";
+      document.body.style.display = "none";
+      document.addEventListener("DOMContentLoaded", function () {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            document.body.style.display = "block";
+          }
+        });
+
+        const signOutButton = document.querySelector(".sign-out");
+        if (signOutButton) {
+          signOutButton.addEventListener("click", () => {
+            if (confirm("Are you sure you want to sign out?")) {
+              signOut();
+            }
+          });
+        }
+      });
+    </script>
+    <style>
+      .sidebar,
+      .main-content {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+    </style>
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        const immediateTheme = savedTheme || systemTheme;
+
+        document.documentElement.setAttribute("data-theme", immediateTheme);
+
+        document.addEventListener("DOMContentLoaded", async function () {
+          try {
+            let authReady = false;
+            let attempts = 0;
+
+            while (!authReady && attempts < 50) {
+              if (window.auth && window.auth.currentUser) {
+                authReady = true;
+                break;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              attempts++;
+            }
+
+            if (authReady) {
+              const user = window.auth.currentUser;
+              const token = await user.getIdToken();
+
+              const hostname = window.location.hostname;
+              const apiUrl =
+                hostname === "localhost" || hostname === "127.0.0.1"
+                  ? "http://localhost:5000/api"
+                  : "/api";
+
+              const response = await fetch(`${apiUrl}/settings`, {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              });
+
+              if (response.ok) {
+                const settings = await response.json();
+
+                if (settings.theme) {
+                  document.documentElement.setAttribute(
+                    "data-theme",
+                    settings.theme
+                  );
+                  localStorage.setItem("theme", settings.theme);
+                }
+
+                if (settings.dateFormat) {
+                  window.dateFormat = settings.dateFormat;
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Error during theme initialization:", error);
+          }
+
+          const sidebar = document.querySelector(".sidebar");
+          const mainContent = document.querySelector(".main-content");
+
+          if (sidebar && mainContent) {
+            const isSidebarCollapsed =
+              localStorage.getItem("sidebarCollapsed") === "true";
+
+            if (isSidebarCollapsed) {
+              sidebar.classList.add("collapsed");
+              mainContent.classList.add("expanded");
+            }
+
+            setTimeout(function () {
+              sidebar.style.opacity = "1";
+              mainContent.style.opacity = "1";
+            }, 300);
+          }
+        });
+      })();
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/lib/codemirror.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/lib/codemirror.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/mode/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.11/addon/display/placeholder.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.4/dist/purify.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="https://img.icons8.com/?size=100&id=8302&format=png&color=4361ee"
+    />
+    <link rel="stylesheet" href="/dashboard/css/theme.css" />
+    <link rel="stylesheet" href="/dashboard/css/components.css" />
+    <link rel="stylesheet" href="/dashboard/css/dashboard.css" />
+    <link rel="stylesheet" href="/dashboard/css/pagination.css" />
+    <link rel="stylesheet" href="/dashboard/css/charts.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="assets/devleads_logo.png" alt="DevLeads Logo" />
+          <!-- <img src="assets/devleads_logo_light.png" alt="DevLeads Logo" /> -->
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a
+                href="/dashboard/home"
+                id="dashboard-link"
+                title="Dashboard"
+                class="active"
+              >
+                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/hitlists" id="hitlists-link" title="Hitlists">
+                <i class="fas fa-bullseye"></i><span>Hitlists</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/forms" id="forms-link" title="Form Templates">
+                <i class="fa-solid fa-file-signature"></i
+                ><span>Form Templates</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/dashboard/resources"
+                id="resources-link"
+                title="Resources"
+              >
+                <i class="fa-solid fa-toolbox"></i><span>Resources</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/settings" id="settings-link" title="Settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+              </a>
+            </li>
+            <li class="sign-out-item" title="Sign Out">
+              <button class="sign-out">
+                <i class="fa-solid fa-right-from-bracket"></i
+                ><span>Sign out</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="header">
+          <h2>Project Dashboard</h2>
+          <div class="search-filter-sort">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchInput" placeholder="Search..." />
+            </div>
+            <select id="filterStatus">
+              <option value="">All Statuses</option>
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="in-progress">In Progress</option>
+              <option value="closed-won">Closed (Won)</option>
+              <option value="closed-lost">Closed (Lost)</option>
+            </select>
+            <select id="combinedSort">
+              <option value="createdAt-desc">Date (Newest First)</option>
+              <option value="createdAt-asc">Date (Oldest First)</option>
+              <option value="lastContactedAt-desc">
+                Last Contacted (Newest First)
+              </option>
+              <option value="lastContactedAt-asc">
+                Last Contacted (Oldest First)
+              </option>
+              <option value="firstName-asc">Name (A to Z)</option>
+              <option value="firstName-desc">Name (Z to A)</option>
+              <option value="businessName-asc">Business Name (A to Z)</option>
+              <option value="businessName-desc">Business Name (Z to A)</option>
+              <option value="status-asc">Status (New to Closed)</option>
+              <option value="status-desc">Status (Closed to New)</option>
+            </select>
+            <!-- Hidden original dropdowns that the JS code will still use -->
+            <select id="sortField" style="display: none">
+              <option value="createdAt">Date</option>
+              <option value="lastContactedAt">Last Contacted</option>
+              <option value="firstName">Name</option>
+              <option value="businessName">Business Name</option>
+              <option value="status">Status</option>
+            </select>
+            <select id="sortOrder" style="display: none">
+              <option value="desc">Newest First</option>
+              <option value="asc">Oldest First</option>
+            </select>
+            <button id="addLeadBtn" class="btn btn-primary blue-border">
+              <i class="fas fa-plus"></i> Add New
+            </button>
+            <button id="exportAllLeadsBtn" class="btn btn-primary">
+              <i class="fas fa-file-export"></i> Export All
+            </button>
+          </div>
+        </header>
+        <!-- Stats Cards -->
+        <!--Values are dynamically set in calculateStats() ui.js-->
+        <details id="statsSection" open>
+          <summary><h3>Key Metrics</h3></summary>
+          <div class="stats-cards">
+            <!-- remove the display none to show again -->
+            <div class="stats-card" style="display: none">
+              <i class="fa-solid fa-laptop-code"></i>
+              <h3>Total Projects</h3>
+              <div class="value" id="totalLeadsValue">0</div>
+              <div class="change positive">
+                <span>All-Time Projects</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <i class="fa-solid fa-bolt"></i>
+              <!-- current month dynamically appears - function is in domcontentloaded in dashboard.js-->
+              <h3 id="month-leads">Leads</h3>
+              <div class="value" id="newLeadsValue">0</div>
+              <div class="change positive">
+                <span>% from last month</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <i class="fa-solid fa-chart-line"></i>
+              <h3>Succesfully Completed</h3>
+              <div class="value" id="conversionRateValue">0%</div>
+              <div class="change" id="conversionChange">
+                <span>Closed-Won Projects</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              <!-- current month dynamically appears - function is in domcontentloaded in dashboard.js-->
+              <h3 id="monthly-revenue-header">Revenue</h3>
+              <div class="value" id="monthlyPaymentsValue">$0</div>
+              <div class="change" id="paymentsChange">
+                <span>% from last month</span>
+              </div>
+            </div>
+            <div class="stats-card">
+              <i class="fa-solid fa-landmark"></i>
+              <h3>All-Time Revenue</h3>
+              <div class="value" id="totalEarningsValue">$0</div>
+              <div class="change">
+                <span>All-Time Earnings</span>
+              </div>
+            </div>
+          </div>
+        </details>
+        <!-- Charts Section -->
+        <details open id="chartsSection">
+          <summary><h3>Performance Visualizations</h3></summary>
+          <div class="charts-cards">
+            <div class="chart-card">
+              <h3>Project Status Distribution</h3>
+              <div id="statusDistributionChart" class="chart-container"></div>
+            </div>
+            <div class="chart-card">
+              <h3>New Leads vs. Closed <small>(Won)</small></h3>
+              <div id="newProjectsChart" class="chart-container"></div>
+            </div>
+            <div class="chart-card">
+              <h3>Revenue Comparison by Month</h3>
+              <div id="revenueComparisonChart" class="chart-container"></div>
+            </div>
+          </div>
+        </details>
+        <!-- View Toggle -->
+        <div class="view-toggle">
+          <button id="gridViewBtn" class="active">
+            <i class="fas fa-th"></i> Grid
+          </button>
+          <button id="listViewBtn"><i class="fas fa-list"></i> List</button>
+        </div>
+        <!-- Leads Container -->
+        <div class="leads-container">
+          <div class="leads-header">
+            <h3><i class="fa-solid fa-laptop-code"></i>Projects</h3>
+          </div>
+          <!-- Add this loading spinner div -->
+          <div id="leadsLoadingSpinner" class="loading-indicator">
+            <i class="fas fa-spinner fa-spin"></i> Loading projects...
+          </div>
+          <!-- Grid View (Default) -->
+          <div class="lead-cards" id="leadCards">
+            <!-- Lead cards will be generated here -->
+          </div>
+          <!-- Table View -->
+          <table class="leads-table" id="leadsTable" style="display: none">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Business</th>
+                <th>Last Contact</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+              <!-- Table rows will be generated here -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+    <!-- Lead Modal -->
+    <div id="leadModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeModal" title="Close">&times;</span>
+        <div class="modal-header">
+          <h3 id="modalTitle">Client Info</h3>
+        </div>
+
+        <!-- Modal action buttons inserted here by JS -->
+        <div id="modalActions" class="modal-actions"></div>
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-tab="personal" title="Personal">
+            <i class="fas fa-user"></i>
+            <span>Personal</span>
+          </button>
+          <button class="modal-tab" data-tab="business" title="Business">
+            <i class="fa-regular fa-building"></i>
+            <span>Business</span>
+          </button>
+          <button class="modal-tab" data-tab="address" title="Address">
+            <i class="fa-solid fa-house"></i>
+            <span>Address</span>
+          </button>
+          <button class="modal-tab" data-tab="service" title="Service">
+            <i class="fa-solid fa-laptop"></i>
+            <span>Service</span>
+          </button>
+          <button class="modal-tab" data-tab="payments" title="Payments">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            <span>Payments</span>
+          </button>
+          <button class="modal-tab" data-tab="forms" title="Forms">
+            <i class="fas fa-file-alt"></i>
+            <span>Forms</span>
+          </button>
+          <button class="modal-tab" data-tab="notes" title="Notes">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </button>
+        </div>
+
+        <form id="leadForm">
+          <input type="hidden" id="leadId" />
+          <!-- Personal Info Tab -->
+          <div class="tab-content active" id="personal-tab">
+            <div class="form-section">
+              <h4>Personal Information</h4>
+              <div class="form-group">
+                <label for="firstName" class="required">First Name*</label>
+                <input type="text" id="firstName" required />
+              </div>
+              <div class="form-group">
+                <label for="lastName" class="required">Last Name*</label>
+                <input type="text" id="lastName" required />
+              </div>
+              <div class="form-group">
+                <label for="email" class="required">Email*</label>
+                <input type="email" id="email" required />
+              </div>
+              <div class="form-group">
+                <label for="phone" class="required">Phone*</label>
+                <div class="phone-group">
+                  <input type="tel" id="phone" required />
+                  <div class="extension-field">
+                    <label for="phoneExt">Ext:</label>
+                    <input type="text" id="phoneExt" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="textNumber">Text Number (if different)</label>
+                <input type="tel" id="textNumber" />
+              </div>
+            </div>
+            <div class="form-section">
+              <h4>Origin</h4>
+              <div class="form-group">
+                <label>Date Created</label>
+                <div class="date-display-readonly" id="createdAtDisplay"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Business Tab -->
+          <div class="tab-content" id="business-tab">
+            <div class="form-section">
+              <h4>Business Information</h4>
+              <div class="form-group">
+                <label for="businessName">Business Name</label>
+                <input type="text" id="businessName" />
+              </div>
+              <div class="form-group">
+                <label for="businessPhone">Business Phone</label>
+                <div class="phone-group">
+                  <input type="tel" id="businessPhone" />
+                  <div class="extension-field">
+                    <label for="businessPhoneExt">Ext:</label>
+                    <input type="text" id="businessPhoneExt" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="businessEmail">Business Email</label>
+                <input type="email" id="businessEmail" />
+              </div>
+              <div class="form-group">
+                <label for="businessServices">Business Services</label>
+                <textarea id="businessServices" rows="1"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Tab -->
+          <div class="tab-content" id="address-tab">
+            <div class="form-section">
+              <h4>Billing Address</h4>
+              <div class="form-group">
+                <label for="billingStreet">Street Address</label>
+                <input type="text" id="billingStreet" name="billingStreet" />
+              </div>
+              <div class="form-group">
+                <label for="billingAptUnit">Apartment/Unit Number</label>
+                <input type="text" id="billingAptUnit" name="billingAptUnit" />
+              </div>
+              <div class="form-group">
+                <label for="billingCity">City</label>
+                <input type="text" id="billingCity" name="billingCity" />
+              </div>
+              <div class="form-group" style="display: flex; gap: 1rem">
+                <div style="flex: 1">
+                  <label for="billingState">State/Province</label>
+                  <input type="text" id="billingState" name="billingState" />
+                </div>
+                <div style="flex: 1">
+                  <label for="billingZipCode">ZIP/Postal Code</label>
+                  <input
+                    type="text"
+                    id="billingZipCode"
+                    name="billingZipCode"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="billingCountry">Country</label>
+                <input type="text" id="billingCountry" name="billingCountry" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Tab -->
+          <div class="tab-content" id="service-tab">
+            <div class="form-section">
+              <h4>Service Information</h4>
+              <div class="form-group">
+                <label for="serviceDesired">Service Desired</label>
+                <select id="serviceDesired">
+                  <option value="">-- Select Service --</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="App Development">App Development</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="hasWebsite">Has Website</label>
+                <select id="hasWebsite">
+                  <option value="">-- Select Option --</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="websiteAddress">Website Address</label>
+                <input type="text" id="websiteAddress" />
+              </div>
+              <div class="form-group">
+                <label for="preferredContact">Preferred Contact Method</label>
+                <select id="preferredContact">
+                  <option value="">-- Select Contact Method --</option>
+                  <option value="phone">Personal Phone</option>
+                  <option value="businessPhone">Business Phone</option>
+                  <option value="email">Personal Email</option>
+                  <option value="text">Text Message</option>
+                  <option value="businessEmail">Business Email</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>Lead Status</h4>
+              <div class="form-group">
+                <label for="status">Current Status*</label>
+                <select id="status" required>
+                  <option value="new">New</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="closed-won">Closed (Won)</option>
+                  <option value="closed-lost">Closed (Lost)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="lastContactedAt">Last Contacted Date</label>
+                <div class="date-input-container">
+                  <input type="date" id="lastContactedAt" />
+                  <div class="date-display" id="lastContactedDisplay"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payments Tab -->
+          <div class="tab-content" id="payments-tab">
+            <div class="form-section">
+              <h4>Payment Information</h4>
+              <div class="form-group">
+                <label for="budget">Estimated Budget</label>
+                <input type="text" id="budget" />
+              </div>
+              <div class="form-group">
+                <label for="totalBudget">Billed Amount</label>
+                <input type="text" id="totalBudget" />
+              </div>
+              <div class="form-group">
+                <label for="paidAmount">Paid Amount</label>
+                <input type="text" id="paidAmount" readonly />
+              </div>
+              <div class="form-group remaining-balance">
+                <label for="remainingBalance">Remaining Balance</label>
+                <input type="text" id="remainingBalance" readonly />
+              </div>
+              <div id="paymentsList" class="payments-list">
+                <h5>Payments</h5>
+                <div class="payments-container">
+                  <!-- Payments will be loaded here -->
+                </div>
+                <button
+                  type="button"
+                  id="addPaymentBtn"
+                  class="btn btn-outline"
+                >
+                  <i class="fas fa-plus"></i> Add Payment
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Forms Tab  -->
+          <div class="tab-content" id="forms-tab">
+            <div class="form-section">
+              <h4>Generated Forms</h4>
+              <div id="leadFormsList" class="forms-list">
+                <!-- Forms will be loaded here -->
+              </div>
+              <button type="button" id="addFormBtn" class="btn btn-outline">
+                <i class="fas fa-plus"></i> Create Form
+              </button>
+            </div>
+
+            <!-- New Signed Documents Section -->
+            <div class="form-section" id="signedDocumentsSection">
+              <h4>Uploaded Documents</h4>
+              <div class="signed-documents-container">
+                <div id="signedDocumentsList" class="signed-documents-list">
+                  <!-- Documents will be loaded here -->
+                </div>
+                <div id="documentUploadArea" class="document-upload-area">
+                  <div class="upload-message">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>Drag & drop PDF files here</p>
+                    <p>or</p>
+                    <button
+                      type="button"
+                      id="selectFilesBtn"
+                      class="btn btn-outline"
+                    >
+                      <i class="fas fa-plus"></i> Select Files
+                    </button>
+                  </div>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept=".pdf"
+                    style="display: none"
+                    multiple
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Preview Modal -->
+          <div id="documentPreviewModal" class="modal">
+            <div class="modal-content">
+              <span class="close-modal" id="closeDocumentPreviewModal"
+                >&times;</span
+              >
+              <div class="modal-header">
+                <h3 id="documentPreviewTitle">Document Preview</h3>
+              </div>
+              <div id="documentPreviewContainer">
+                <iframe
+                  id="documentPreviewFrame"
+                  sandbox="allow-scripts"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes Tab -->
+          <div class="tab-content" id="notes-tab">
+            <div class="form-section">
+              <h4>Message & Notes</h4>
+              <div class="form-group">
+                <label for="message">Customer Message</label>
+                <textarea id="message" rows="1"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="notes">Internal Notes</label>
+                <textarea id="notes" rows="1"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+      <p id="toastMessage"></p>
+    </div>
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closePaymentModal">&times;</span>
+        <div class="modal-header">
+          <h3 id="paymentModalTitle">Add Payment</h3>
+        </div>
+        <form id="paymentForm">
+          <input type="hidden" id="paymentId" />
+          <input type="hidden" id="paymentLeadId" />
+          <div class="form-group">
+            <label for="paymentAmount">Amount*</label>
+            <input type="text" id="paymentAmount" required />
+          </div>
+          <div class="form-group">
+            <label for="paymentDate">Payment Date*</label>
+            <div class="date-input-container">
+              <input type="date" id="paymentDate" required />
+              <div class="date-display" id="paymentDateDisplay"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="paymentNotes">Notes</label>
+            <textarea id="paymentNotes" rows="5"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Payment</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeExportModal">&times;</span>
+        <div class="modal-header">
+          <h3 id="exportModalTitle">Export Lead Data</h3>
+        </div>
+        <div class="modal-body">
+          <p>Choose your export format:</p>
+          <div class="export-options">
+            <button id="exportJsonBtn" class="btn btn-primary">
+              <i class="fas fa-file-code"></i> Export as JSON
+            </button>
+            <button id="exportCsvBtn" class="btn btn-info">
+              <i class="fas fa-file-csv"></i> Export as CSV
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script type="module" src="/dashboard/js/utils.js"></script>
+    <script type="module" src="/dashboard/js/api.js"></script>
+    <script type="module" src="/dashboard/js/ui.js"></script>
+    <script type="module" src="/dashboard/js/handlers.js"></script>
+    <script type="module" src="/dashboard/js/payments.js"></script>
+    <script type="module" src="/dashboard/js/leadForms.js"></script>
+    <script type="module" src="/dashboard/js/documents.js"></script>
+    <script type="module" src="/dashboard/js/charts.js"></script>
+    <script type="module" src="/dashboard/js/dashboard.js"></script>
+    <script type="module" src="/dashboard/js/authApi.js"></script>
+    <script src="/dashboard/js/super-secret.js"></script>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2.5rem 0;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .pagination-buttons-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  .pagination-button {
+    background-color: var(--card-background);
+    color: var(--text-muted);
+    border: 0.1rem solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4rem;
+  }
+  
+  .pagination-button:hover {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  
+  .pagination-button.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  
+  .pagination-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
+  .pagination-info {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    margin: 0 1rem;
+    white-space: nowrap;
+  }
+  
+  #pageSizeSelector {
+    background-color: transparent;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    padding: .65rem;
+    cursor: pointer;
+    transition: color var(--transition-speed);
+    position: relative;
+    outline: none;
+    max-width: 175px;
+  }
+  
+  #pageSizeSelector:hover {
+    color: var(--text-color);
+  }
+  
+  #pageSizeSelector span {
+    position: relative;
+  }
+
+  @media (max-width: 768px) {
+    .pagination {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    
+    .pagination-button {
+      padding: 0.6rem 1rem;
+      font-size: 1.3rem;
+      min-width: 3.5rem;
+    }
+    
+    .pagination-info {
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 0.5rem 0;
+    }
+  
+    #pageSizeSelector {
+      min-width: 155px;
+      background-color: var(--input-bg);
+      border: 0.1rem solid var(--input-border);
+      border-radius: 0.5rem;
+      padding: 0.7rem 1.2rem;
+      font-size: 1.4rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .pagination {
+      padding: 0 0.5rem;
+      flex-direction: column;
+    }
+    
+    .pagination-buttons-container {
+      margin-right: 0;
+      margin-bottom: 0.8rem;
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .pagination-button {
+      padding: 0.5rem 0.8rem;
+      font-size: 1.2rem;
+      min-width: 3rem;
+    }
+    
+    .pagination-info {
+      font-size: 1.1rem;
+      order: 3; 
+    }
+  
+    #pageSizeSelector {
+      width: auto;
+      order: 2; 
+    }
+  }

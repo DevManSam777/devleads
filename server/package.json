@@ -1,0 +1,44 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "_scriptExplanations": {
+    "seed-forms:force": "Forces the form seeding process to run, deleting all templates and populating forms page with starter templates.",
+    "seed-forms:reset": "Inserts any starter template forms that are currently missing in the database (based on title), leaving existing forms untouched. Also resets the internal seeder status flag (fallback)."
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed:force": "node scripts/seed.js --force",
+    "seed:reset": "node scripts/seed.js --reset-status",
+    "postinstall": "echo 'Skipping Chromium download - using system Chrome'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "body-parser": "^1.20.3",
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "firebase-admin": "^13.3.0",
+    "mongoose": "^8.12.2",
+    "nodemailer": "^6.9.13",
+    "puppeteer": "^21.5.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "config": {
+    "puppeteer_skip_chromium_download": "true"
+  }
+}

@@ -1,0 +1,359 @@
+
+/* Business Scraper Modal Styles */
+
+#scraperModal .modal-content {
+  max-width: 650px;
+  width: 90%;
+  max-height: 98vh;
+  overflow-y: auto;
+  padding: 1.2rem 2rem 2rem;
+}
+
+#scraperModal .modal-header h3 {
+  margin: 0 0 1rem;
+}
+
+#scraperModal .modal-header p {
+  color: var(--text-secondary);
+  margin: 0.25rem 0 0 0;
+  font-size: 1rem;
+}
+
+#scraperModal label {
+  font-size: 1.6rem;
+}
+
+#scraperModal small {
+  font-size: 0.8rem;
+}
+
+.info-banner {
+  background: rgba(var(--primary-color-rgb), 0.1);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+  border-radius: 6px;
+  padding: 0.4rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.info-banner i {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.info-banner:nth-of-type(3) {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.warning-banner {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.warning-banner i {
+  color: #ff6b35;
+  flex-shrink: 0;
+}
+
+/* Form Styles */
+.form-group small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* Progress Section */
+.scraper-progress {
+  padding: 1rem 0;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-header h4 {
+  margin: 0;
+  color: var(--primary-color);
+}
+
+.progress-bar-container {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #007bff;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+#progressText {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.progress-message {
+  padding: 0.75rem;
+  background-color: var(--background-secondary);
+  border-radius: 6px;
+  border-left: 4px solid var(--primary-color);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+/* Results Preview */
+.progress-results {
+  margin-top: 1rem;
+}
+
+.progress-results h5 {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-primary);
+}
+
+.results-list {
+  max-height: 350px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--background-secondary);
+}
+
+.result-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 0.75rem;
+  background: var(--background-primary);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.result-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.result-name {
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.result-details {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.result-details span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Completion Section */
+.scraper-complete {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.completion-message {
+  margin-bottom: 2rem;
+}
+
+.completion-message i {
+  font-size: 3rem;
+  color: var(--success-color);
+  margin-bottom: 1rem;
+}
+
+.completion-message h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--success-color);
+}
+
+.completion-message p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Button Styles */
+.btn-sm {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  min-width: 90px;
+}
+
+/* Hitlist Selection Layout */
+.hitlist-selection {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.hitlist-selection select {
+  flex: 1;
+}
+
+.hitlist-selection .btn-sm {
+  margin-bottom: 0;
+}
+
+/* Small Modal for Quick Actions */
+.small-modal {
+  max-width: 400px;
+}
+
+/* Slider Styles */
+.slider-container {
+  margin: 0.5rem 0;
+}
+
+.results-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--border-color);
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+#findBusinessesBtn {
+  /* Use exact same styling as .btn.btn-primary */
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+  white-space: nowrap;
+  background-color: var(--primary);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+#findBusinessesBtn:hover {
+  background-color: var(--secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  #findBusinessesBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  #scraperModal .modal-content {
+    width: 90%;
+    margin: 1rem auto;
+  }
+
+  .progress-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .result-details {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  #findBusinessesBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Scraper Form Specific Spacing */
+#scraperForm .form-group {
+  margin-bottom: 1.25rem;
+}
+
+#scraperForm .modal-actions {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+#scraperModal .modal-header {
+  margin-bottom: 1.25rem;
+}
+
+/* Loading Spinner Animation */
+.fa-spin {
+  animation: fa-spin 1s infinite linear;
+  margin-right: 0.5rem;
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.progress-message i.fa-spinner {
+  color: var(--primary-color);
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .progress-message {
+  background-color: var(--background-primary);
+  border-left-color: var(--accent-color);
+}
+
+[data-theme="dark"] .results-list {
+  background-color: var(--background-primary);
+}
+
+[data-theme="dark"] .result-item {
+  border-bottom-color: var(--border-dark);
+}

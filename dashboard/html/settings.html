@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevLeads Settings</title>
+    <script type="module">
+      import { auth, signOut } from "/dashboard/js/authApi.js";
+      document.body.style.display = "none";
+      document.addEventListener("DOMContentLoaded", function () {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            document.body.style.display = "block";
+          }
+        });
+
+        const signOutButton = document.querySelector(".sign-out");
+        if (signOutButton) {
+          signOutButton.addEventListener("click", () => {
+            if (confirm("Are you sure you want to sign out?")) {
+              signOut();
+            }
+          });
+        }
+      });
+    </script>
+    <style>
+      .sidebar,
+      .main-content {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+    </style>
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        const immediateTheme = savedTheme || systemTheme;
+
+        document.documentElement.setAttribute("data-theme", immediateTheme);
+
+        document.addEventListener("DOMContentLoaded", async function () {
+          try {
+            let authReady = false;
+            let attempts = 0;
+
+            while (!authReady && attempts < 50) {
+              if (window.auth && window.auth.currentUser) {
+                authReady = true;
+                break;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              attempts++;
+            }
+
+            if (authReady) {
+              const user = window.auth.currentUser;
+              const token = await user.getIdToken();
+
+              const hostname = window.location.hostname;
+              const apiUrl =
+                hostname === "localhost" || hostname === "127.0.0.1"
+                  ? "http://localhost:5000/api"
+                  : "/api";
+
+              const response = await fetch(`${apiUrl}/settings`, {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              });
+
+              if (response.ok) {
+                const settings = await response.json();
+
+                if (settings.theme) {
+                  document.documentElement.setAttribute(
+                    "data-theme",
+                    settings.theme
+                  );
+                  localStorage.setItem("theme", settings.theme);
+                }
+
+                if (settings.dateFormat) {
+                  window.dateFormat = settings.dateFormat;
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Error during theme initialization:", error);
+          }
+
+          const sidebar = document.querySelector(".sidebar");
+          const mainContent = document.querySelector(".main-content");
+
+          if (sidebar && mainContent) {
+            const isSidebarCollapsed =
+              localStorage.getItem("sidebarCollapsed") === "true";
+
+            if (isSidebarCollapsed) {
+              sidebar.classList.add("collapsed");
+              mainContent.classList.add("expanded");
+            }
+
+            setTimeout(function () {
+              sidebar.style.opacity = "1";
+              mainContent.style.opacity = "1";
+            }, 300);
+          }
+        });
+      })();
+    </script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="https://img.icons8.com/?size=100&id=8302&format=png&color=4361ee"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/dashboard/css/theme.css" />
+    <link rel="stylesheet" href="/dashboard/css/components.css" />
+    <link rel="stylesheet" href="/dashboard/css/dashboard.css" />
+    <link rel="stylesheet" href="/dashboard/css/settings.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="assets/devleads_logo.png" alt="DevLeads Logo" />
+          <!-- <img src="assets/devleads_logo_light.png" alt="DevLeads Logo" /> -->
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="/dashboard/home" id="dashboard-link" title="Dashboard">
+                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/hitlists" id="hitlists-link" title="Hitlists">
+                <i class="fas fa-bullseye"></i><span>Hitlists</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/forms" id="forms-link" title="Form Templates">
+                <i class="fa-solid fa-file-signature"></i
+                ><span>Form Templates</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/dashboard/resources"
+                id="resources-link"
+                title="Resources"
+              >
+                <i class="fa-solid fa-toolbox"></i><span>Resources</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/dashboard/settings"
+                id="settings-link"
+                title="Settings"
+                class="active"
+              >
+                <i class="fas fa-cog"></i> <span>Settings</span>
+              </a>
+            </li>
+            <li class="sign-out-item" title="Sign Out">
+              <button class="sign-out">
+                <i class="fa-solid fa-right-from-bracket"></i
+                ><span>Sign out</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </aside>
+      <main class="main-content">
+        <header class="header">
+          <h2>Settings</h2>
+        </header>
+        <!-- Settings Container -->
+        <div class="settings-container">
+          <div class="settings-card">
+            <h3>Theme Settings</h3>
+            <div class="settings-option">
+              <label>Interface Theme</label>
+              <div class="theme-segmented-control">
+                <button type="button" class="theme-segment" data-theme="light">
+                  <i class="fas fa-sun"></i> Light
+                </button>
+                <button type="button" class="theme-segment" data-theme="dark">
+                  <i class="fas fa-moon"></i> Dark
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3>Date Format Settings</h3>
+            <div class="settings-option">
+              <label>Date Format</label>
+              <div class="date-format-segmented-control">
+                <button
+                  type="button"
+                  class="date-format-segment"
+                  data-format="MM/DD/YYYY"
+                >
+                  <i class="fas fa-calendar"></i> MM/DD/YYYY
+                </button>
+                <button
+                  type="button"
+                  class="date-format-segment"
+                  data-format="DD/MM/YYYY"
+                >
+                  <i class="fas fa-calendar"></i> DD/MM/YYYY
+                </button>
+                <button
+                  type="button"
+                  class="date-format-segment"
+                  data-format="YYYY-MM-DD"
+                >
+                  <i class="fas fa-calendar"></i> YYYY-MM-DD
+                </button>
+              </div>
+              <p class="format-example">
+                Example: <span id="dateFormatExample"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/dashboard/js/utils.js"></script>
+    <script type="module" src="/dashboard/js/api.js"></script>
+    <script type="module" src="/dashboard/js/settings.js"></script>
+    <script type="module" src="/dashboard/js/authApi.js"></script>
+    <script src="/dashboard/js/super-secret.js"></script>
+  </body>
+</html>

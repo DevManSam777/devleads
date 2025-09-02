@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevLeads Hitlists</title>
+    <script type="module">
+      import { auth, signOut } from "/dashboard/js/authApi.js";
+      document.body.style.display = "none";
+      document.addEventListener("DOMContentLoaded", function () {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            document.body.style.display = "block";
+          }
+        });
+
+        const signOutButton = document.querySelector(".sign-out");
+        if (signOutButton) {
+          signOutButton.addEventListener("click", () => {
+            if (confirm("Are you sure you want to sign out?")) {
+              signOut();
+            }
+          });
+        }
+      });
+    </script>
+    <style>
+      .sidebar,
+      .main-content {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+    </style>
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        const immediateTheme = savedTheme || systemTheme;
+
+        document.documentElement.setAttribute("data-theme", immediateTheme);
+
+        document.addEventListener("DOMContentLoaded", async function () {
+          try {
+            let authReady = false;
+            let attempts = 0;
+
+            while (!authReady && attempts < 50) {
+              if (window.auth && window.auth.currentUser) {
+                authReady = true;
+                break;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              attempts++;
+            }
+
+            if (authReady) {
+              const user = window.auth.currentUser;
+              const token = await user.getIdToken();
+
+              const hostname = window.location.hostname;
+              const apiUrl =
+                hostname === "localhost" || hostname === "127.0.0.1"
+                  ? "http://localhost:5000/api"
+                  : "/api";
+
+              const response = await fetch(`${apiUrl}/settings`, {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              });
+
+              if (response.ok) {
+                const settings = await response.json();
+
+                if (settings.theme) {
+                  document.documentElement.setAttribute(
+                    "data-theme",
+                    settings.theme
+                  );
+                  localStorage.setItem("theme", settings.theme);
+                }
+
+                if (settings.dateFormat) {
+                  window.dateFormat = settings.dateFormat;
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Error during theme initialization:", error);
+          }
+
+          const sidebar = document.querySelector(".sidebar");
+          const mainContent = document.querySelector(".main-content");
+
+          if (sidebar && mainContent) {
+            const isSidebarCollapsed =
+              localStorage.getItem("sidebarCollapsed") === "true";
+
+            if (isSidebarCollapsed) {
+              sidebar.classList.add("collapsed");
+              mainContent.classList.add("expanded");
+            }
+
+            setTimeout(function () {
+              sidebar.style.opacity = "1";
+              mainContent.style.opacity = "1";
+            }, 300);
+          }
+        });
+      })();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/addons/cleave-phone.us.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="icon"
+      href="https://img.icons8.com/?size=100&id=8302&format=png&color=4361ee"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/dashboard/css/theme.css" />
+    <link rel="stylesheet" href="/dashboard/css/components.css" />
+    <link rel="stylesheet" href="/dashboard/css/dashboard.css" />
+    <link rel="stylesheet" href="/dashboard/css/pagination.css" />
+    <link rel="stylesheet" href="/dashboard/css/hitlist.css" />
+    <link rel="stylesheet" href="/dashboard/css/scraper.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="assets/devleads_logo.png" alt="DevLeads Logo" />
+          <!-- <img src="assets/devleads_logo_light.png" alt="DevLeads Logo" /> -->
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="/dashboard/home" id="dashboard-link" title="Dashboard">
+                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/dashboard/hitlists"
+                id="hitlists-link"
+                title="Hitlists"
+                class="active"
+              >
+                <i class="fas fa-bullseye"></i><span>Hitlists</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/forms" id="forms-link" title="Form Templates">
+                <i class="fa-solid fa-file-signature"></i
+                ><span>Form Templates</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/dashboard/resources"
+                id="resources-link"
+                title="Resources"
+              >
+                <i class="fa-solid fa-toolbox"></i><span>Resources</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/settings" id="settings-link" title="Settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+              </a>
+            </li>
+            <li class="sign-out-item" title="Sign Out">
+              <button class="sign-out">
+                <i class="fa-solid fa-right-from-bracket"></i
+                ><span>Sign out</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="header">
+          <h2>Business Hitlists</h2>
+          <div class="search-filter-sort">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search hitlists..."
+              />
+            </div>
+
+            <button id="findBusinessesBtn" class="btn btn-primary">
+              <i class="fas fa-city"></i> Business Finder
+            </button>
+
+            <button id="createHitlistBtn" class="btn btn-primary blue-border">
+              <i class="fas fa-plus"></i> Create Hitlist
+            </button>
+          </div>
+        </header>
+
+        <!-- Hitlists Container -->
+        <div class="hitlists-container">
+          <div class="hitlists-header">
+            <h3><i class="fa-solid fa-bullseye"></i>Hitlists</h3>
+          </div>
+          <div id="hitlistsLoadingSpinner" class="loading-indicator">
+            <i class="fas fa-spinner fa-spin"></i> Loading hitlists...
+          </div>
+          <div id="hitlistsList" class="hitlists-list">
+            <!-- Hitlists will be loaded here -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Create/Edit Hitlist Modal -->
+    <div id="hitlistModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeHitlistModal">&times;</span>
+        <div class="modal-header">
+          <h3 id="hitlistModalTitle">Create New Hitlist</h3>
+        </div>
+        <form id="hitlistForm">
+          <input type="hidden" id="hitlistId" />
+          <div class="form-group">
+            <label for="hitlistName" class="required">Name</label>
+            <input type="text" id="hitlistName" required />
+          </div>
+          <div class="form-group">
+            <label for="hitlistDescription">Description</label>
+            <textarea id="hitlistDescription" rows="3"></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" id="cancelHitlistBtn" class="btn btn-outline">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Hitlist</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Business List Modal -->
+    <div id="businessListModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeBusinessListModal">&times;</span>
+        <div class="modal-header">
+          <h3 id="businessListTitle">Businesses</h3>
+          <div
+            class="business-actions-container"
+            style="display: flex; gap: 1rem"
+          >
+            <button id="addBusinessBtn" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add Business
+            </button>
+          </div>
+        </div>
+        <div class="business-filters">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="businessSearchInput"
+              placeholder="Search businesses..."
+            />
+          </div>
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="not-contacted">Not Contacted</option>
+            <option value="contacted">Contacted</option>
+            <option value="follow-up">Follow-up Required</option>
+            <option value="not-interested">Not Interested</option>
+            <option value="converted">Converted</option>
+          </select>
+        </div>
+        <div id="businessesList" class="businesses-list">
+          <!-- Businesses will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Form Modal -->
+    <div id="businessModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeBusinessModal">&times;</span>
+        <div class="modal-header">
+          <h3 id="businessModalTitle">Add Business</h3>
+        </div>
+        <form id="businessForm">
+          <input type="hidden" id="businessId" />
+          <input type="hidden" id="currentHitlistId" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="businessName" class="required">Business Name</label>
+              <input type="text" id="businessName" required />
+            </div>
+            <div class="form-group">
+              <label for="typeOfBusiness">Type of Business</label>
+              <input type="text" id="typeOfBusiness" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contactFirstName">First Name</label>
+              <input type="text" id="contactFirstName" />
+            </div>
+            <div class="form-group">
+              <label for="contactLastName">Last Name</label>
+              <input type="text" id="contactLastName" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="businessPhone">Business Phone</label>
+              <input type="tel" id="businessPhone" />
+            </div>
+            <div class="form-group">
+              <label for="businessPhoneExt">Extension</label>
+              <input type="text" id="businessPhoneExt" placeholder="Optional" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="businessEmail">Business Email</label>
+              <input type="email" id="businessEmail" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="websiteUrl">Website</label>
+              <input
+                type="text"
+                id="websiteUrl"
+                placeholder="Enter website (optional)"
+              />
+            </div>
+          </div>
+
+          <!-- Address Fields -->
+          <div class="form-group">
+            <label for="businessStreet">Street Address</label>
+            <input
+              type="text"
+              id="businessStreet"
+              placeholder="Enter street address"
+            />
+          </div>
+          <div class="form-group">
+            <label for="businessAptUnit">Apt/Unit</label>
+            <input
+              type="text"
+              id="businessAptUnit"
+              placeholder="Enter apartment or unit number"
+            />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="businessCity">City</label>
+              <input type="text" id="businessCity" placeholder="Enter city" />
+            </div>
+            <div class="form-group">
+              <label for="businessState">State</label>
+              <input type="text" id="businessState" placeholder="Enter state" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="businessZipCode">ZIP Code</label>
+              <input
+                type="text"
+                id="businessZipCode"
+                placeholder="Enter ZIP code"
+              />
+            </div>
+            <div class="form-group">
+              <label for="businessCountry">Country</label>
+              <input
+                type="text"
+                id="businessCountry"
+                placeholder="Enter country"
+                value="USA"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="status">Status</label>
+              <select id="status">
+                <option value="not-contacted">Not Contacted</option>
+                <option value="contacted">Contacted</option>
+                <option value="follow-up">Follow-up Required</option>
+                <option value="not-interested">Not Interested</option>
+                <option value="converted">Converted</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="priority">Priority</label>
+              <select id="priority">
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="low" selected>Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastContactedDate">Last Contacted</label>
+            <div class="date-input-container">
+              <input type="date" id="lastContactedDate" />
+              <div class="date-display" id="lastContactedDisplay"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" rows="4"></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancelBusinessBtn"
+              class="btn btn-outline"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Business</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Business View Modal -->
+    <div id="businessViewModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeBusinessViewModal">&times;</span>
+        <div class="modal-header">
+          <h3 id="businessViewModalTitle">Business Details</h3>
+        </div>
+        <div class="view-container">
+          <div class="form-section">
+            <div class="form-group">
+              <label>Business Name</label>
+              <div class="date-display-readonly" id="viewBusinessName"></div>
+            </div>
+            <div class="form-group">
+              <label>Type of Business</label>
+              <div class="date-display-readonly" id="viewTypeOfBusiness"></div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label>First Name</label>
+              <div
+                class="date-display-readonly"
+                id="viewContactFirstName"
+              ></div>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <div class="date-display-readonly" id="viewContactLastName"></div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label>Business Phone</label>
+              <div class="date-display-readonly" id="viewBusinessPhone"></div>
+              <label class="ext-label">Ext:</label>
+              <div
+                class="date-display-readonly"
+                id="viewBusinessPhoneExt"
+              ></div>
+            </div>
+            <div class="form-group">
+              <label>Business Email</label>
+              <div id="viewBusinessEmail"></div>
+            </div>
+          </div>
+
+          <!-- Website Section -->
+          <div class="form-section">
+            <div class="form-group">
+              <label>Website</label>
+              <div class="date-display-readonly" id="viewWebsiteUrlText"></div>
+              <div id="viewWebsiteUrl"></div>
+            </div>
+          </div>
+
+          <!-- Address Fields -->
+          <div class="form-section">
+            <div class="form-group">
+              <label>Street Address</label>
+              <div class="date-display-readonly" id="viewBusinessStreet"></div>
+            </div>
+            <div class="form-group">
+              <label>Apartment/Unit</label>
+              <div class="date-display-readonly" id="viewBusinessAptUnit"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>City</label>
+                <div class="date-display-readonly" id="viewBusinessCity"></div>
+              </div>
+              <div class="form-group">
+                <label>State</label>
+                <div class="date-display-readonly" id="viewBusinessState"></div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>ZIP Code</label>
+                <div
+                  class="date-display-readonly"
+                  id="viewBusinessZipCode"
+                ></div>
+              </div>
+              <div class="form-group">
+                <label>Country</label>
+                <div
+                  class="date-display-readonly"
+                  id="viewBusinessCountry"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label>Status</label>
+              <div class="date-display-readonly" id="viewStatus"></div>
+            </div>
+            <div class="form-group">
+              <label>Priority</label>
+              <div class="date-display-readonly" id="viewPriority"></div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label>Last Contacted</label>
+              <div
+                class="date-display-readonly"
+                id="viewLastContactedDate"
+              ></div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-group">
+              <label>Notes</label>
+              <div class="date-display-readonly" id="viewNotes"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Business Scraper Modal -->
+    <div id="scraperModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" id="closeScraperModal">&times;</span>
+        <div class="modal-header">
+          <h3>Business Finder Tool</h3>
+          <p>
+            Search for businesses on Yellow Pages and add them directly to your
+            hitlist
+          </p>
+          <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <span
+              >Businesses are saved directly to your selected hitlist.
+              Duplicates are automatically detected and skipped.</span
+            >
+          </div>
+          <div class="info-banner">
+            <i class="fas fa-info-circle"></i>
+            <span
+              >Keep this window open during search - closing will interrupt the
+              process.</span
+            >
+          </div>
+          <div class="info-banner">
+            <i class="fas fa-mobile-alt"></i>
+            <span
+              >On mobile devices, if your screen hibernates and the progress appears stalled 
+              when you return, refresh the page and check your hitlists - the search may have completed.</span
+            >
+          </div>
+          <div class="warning-banner">
+            <i class="fas fa-flag-usa"></i>
+            <span>This search is limited to US-based businesses only.</span>
+          </div>
+        </div>
+
+        <form id="scraperForm">
+          <div class="form-group">
+            <label for="searchTerm" class="required">Business Type</label>
+            <input
+              type="text"
+              id="searchTerm"
+              placeholder="e.g., restaurants, coffee shops, dentists"
+              required
+            />
+            <small>What type of businesses are you looking for?</small>
+          </div>
+
+          <div class="form-group">
+            <label for="searchLocation" class="required">Location</label>
+            <input
+              type="text"
+              id="searchLocation"
+              placeholder="e.g., New York, NY or 10036"
+              required
+            />
+            <small>City, state or ZIP code</small>
+          </div>
+
+          <div class="form-group">
+            <label for="maxResults"
+              >Search For:
+              <span id="maxResultsValue">30</span> businesses</label
+            >
+            <div class="slider-container">
+              <input
+                type="range"
+                id="maxResults"
+                min="5"
+                max="1000"
+                value="30"
+                step="5"
+                class="results-slider"
+              />
+              <div class="slider-labels">
+                <span>0</span>
+                <span>250</span>
+                <span>500</span>
+                <span>750</span>
+                <span>1000</span>
+              </div>
+            </div>
+            <small>More results take longer to find and process</small>
+          </div>
+
+          <div class="form-group">
+            <label for="targetHitlist" class="required">Add to Hitlist</label>
+            <div class="hitlist-selection">
+              <select id="targetHitlist" required>
+                <option value="">Select a hitlist...</option>
+              </select>
+              <button
+                type="button"
+                id="createNewHitlistBtn"
+                class="btn btn-outline btn-sm"
+              >
+                <i class="fas fa-plus"></i> New Hitlist
+              </button>
+            </div>
+            <small id="hitlistInfo"
+              >Businesses will be added to this hitlist</small
+            >
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="cancelScraperBtn" class="btn btn-outline">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-search"></i> Start Search
+            </button>
+          </div>
+        </form>
+
+        <!-- Progress section (initially hidden) -->
+        <div
+          id="scraperProgress"
+          class="scraper-progress"
+          style="display: none"
+        >
+          <div class="progress-header">
+            <h4>Searching for businesses...</h4>
+            <button id="cancelJobBtn" class="btn btn-outline btn-sm">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+
+          <div class="progress-bar-container">
+            <div class="progress-bar">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <span id="progressText">0 businesses found</span>
+          </div>
+
+          <div id="progressMessage" class="progress-message">
+            Initializing...
+          </div>
+
+          <div
+            id="progressResults"
+            class="progress-results"
+            style="display: none"
+          >
+            <h5>Preview of found businesses:</h5>
+            <div id="resultsList" class="results-list">
+              <!-- Results will be shown here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Completion section (initially hidden) -->
+        <div
+          id="scraperComplete"
+          class="scraper-complete"
+          style="display: none"
+        >
+          <div class="completion-message">
+            <i class="fas fa-check-circle"></i>
+            <h4>Search Complete!</h4>
+            <p id="completionText">
+              Successfully added businesses to your hitlist.
+            </p>
+          </div>
+
+          <div class="modal-actions">
+            <button id="viewHitlistBtn" class="btn btn-primary">
+              <i class="fas fa-eye"></i> View Hitlist
+            </button>
+            <button id="searchAgainBtn" class="btn btn-outline">
+              <i class="fas fa-search"></i> Search Again
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Hitlist Creation Modal -->
+    <div id="quickHitlistModal" class="modal">
+      <div class="modal-content small-modal">
+        <span class="close-modal" id="closeQuickHitlistModal">&times;</span>
+        <div class="modal-header">
+          <h3>Create New Hitlist</h3>
+        </div>
+
+        <form id="quickHitlistForm">
+          <div class="form-group">
+            <label for="quickHitlistName" class="required">Name</label>
+            <input
+              type="text"
+              id="quickHitlistName"
+              required
+              placeholder="e.g., Austin Pizza Places"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="quickHitlistDescription">Description (optional)</label>
+            <textarea
+              id="quickHitlistDescription"
+              rows="2"
+              placeholder="Brief description of this hitlist..."
+            ></textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              id="cancelQuickHitlistBtn"
+              class="btn btn-outline"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Create & Use
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">
+      <p id="toastMessage"></p>
+    </div>
+    <script type="module" src="/dashboard/js/utils.js"></script>
+    <script type="module" src="/dashboard/js/api.js"></script>
+    <script type="module" src="/dashboard/js/hitlists.js"></script>
+    <script type="module" src="/dashboard/js/authApi.js"></script>
+    <script type="module" src="/dashboard/js/scraper.js"></script>
+    <script src="/dashboard/js/super-secret.js"></script>
+  </body>
+</html>

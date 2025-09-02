@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevLeads Resources</title>
+    <script type="module">
+      import { auth, signOut } from "/dashboard/js/authApi.js";
+      document.body.style.display = "none";
+      document.addEventListener("DOMContentLoaded", function () {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            document.body.style.display = "block";
+          }
+        });
+
+        const signOutButton = document.querySelector(".sign-out");
+        if (signOutButton) {
+          signOutButton.addEventListener("click", () => {
+            if (confirm("Are you sure you want to sign out?")) {
+              signOut();
+            }
+          });
+        }
+      });
+    </script>
+    <style>
+      .sidebar,
+      .main-content {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+    </style>
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme");
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        const immediateTheme = savedTheme || systemTheme;
+
+        document.documentElement.setAttribute("data-theme", immediateTheme);
+
+        document.addEventListener("DOMContentLoaded", async function () {
+          try {
+            let authReady = false;
+            let attempts = 0;
+
+            while (!authReady && attempts < 50) {
+              if (window.auth && window.auth.currentUser) {
+                authReady = true;
+                break;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 100));
+              attempts++;
+            }
+
+            if (authReady) {
+              const user = window.auth.currentUser;
+              const token = await user.getIdToken();
+
+              const hostname = window.location.hostname;
+              const apiUrl =
+                hostname === "localhost" || hostname === "127.0.0.1"
+                  ? "http://localhost:5000/api"
+                  : "/api";
+
+              const response = await fetch(`${apiUrl}/settings`, {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              });
+
+              if (response.ok) {
+                const settings = await response.json();
+
+                if (settings.theme) {
+                  document.documentElement.setAttribute(
+                    "data-theme",
+                    settings.theme
+                  );
+                  localStorage.setItem("theme", settings.theme);
+                }
+
+                if (settings.dateFormat) {
+                  window.dateFormat = settings.dateFormat;
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Error during theme initialization:", error);
+          }
+
+          const sidebar = document.querySelector(".sidebar");
+          const mainContent = document.querySelector(".main-content");
+
+          if (sidebar && mainContent) {
+            const isSidebarCollapsed =
+              localStorage.getItem("sidebarCollapsed") === "true";
+
+            if (isSidebarCollapsed) {
+              sidebar.classList.add("collapsed");
+              mainContent.classList.add("expanded");
+            }
+
+            setTimeout(function () {
+              sidebar.style.opacity = "1";
+              mainContent.style.opacity = "1";
+            }, 300);
+          }
+        });
+      })();
+    </script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="https://img.icons8.com/?size=100&id=8302&format=png&color=4361ee"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/dashboard/css/theme.css" />
+    <link rel="stylesheet" href="/dashboard/css/components.css" />
+    <link rel="stylesheet" href="/dashboard/css/dashboard.css" />
+    <link rel="stylesheet" href="/dashboard/css/pagination.css" />
+    <link rel="stylesheet" href="/dashboard/css/resources.css" />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <img src="assets/devleads_logo.png" alt="DevLeads Logo" />
+          <!-- <img src="assets/devleads_logo_light.png" alt="DevLeads Logo" /> -->
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="/dashboard/home" id="dashboard-link" title="Dashboard">
+                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/hitlists" id="hitlists-link" title="Hitlists">
+                <i class="fas fa-bullseye"></i><span>Hitlists</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/forms" id="forms-link" title="Form Templates">
+                <i class="fa-solid fa-file-signature"></i
+                ><span>Form Templates</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="/dashboard/resources"
+                id="resources-link"
+                title="Resources"
+                class="active"
+              >
+                <i class="fa-solid fa-toolbox"></i><span>Resources</span>
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard/settings" id="settings-link" title="Settings">
+                <i class="fas fa-cog"></i> <span>Settings</span>
+              </a>
+            </li>
+            <li class="sign-out-item" title="Sign Out">
+              <button class="sign-out">
+                <i class="fa-solid fa-right-from-bracket"></i
+                ><span>Sign out</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="header">
+          <h2>Developer Resources</h2>
+        </header>
+        <div class="resources-container">
+          <div class="resource-card">
+            <h3><i class="fas fa-briefcase"></i> Business Resources</h3>
+            <div class="resource-content">
+              <ul class="resource-list">
+                <li>
+                  <a
+                    href="https://cal.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <div class="resource-info">
+                      <h4>Cal.com</h4>
+                      <p>Fully customizable scheduling software</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://htmlburger.com/blog/design-proposal-templates/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-burger"></i>
+                    <div class="resource-info">
+                      <h4>htmlBURGER</h4>
+                      <p>11 Free Web Design & Development Proposal Templates</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.notion.so/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fas fa-tasks"></i>
+                    <div class="resource-info">
+                      <h4>Notion</h4>
+                      <p>
+                        All-in-one workspace for notes, tasks, wikis, and
+                        databases
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://app.opensignlabs.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-signature"></i>
+                    <div class="resource-info">
+                      <h4>OpenSign</h4>
+                      <p>Free and Open-Source PDF e-signature solution</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://stripe.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fas fa-dollar"></i>
+                    <div class="resource-info">
+                      <h4>Stripe</h4>
+                      <p>Online payment processing platform</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://trello.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <div class="resource-info">
+                      <h4>Trello</h4>
+                      <p>
+                        Web-based Kanban project management and collaboration
+                        application
+                      </p>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="resource-card">
+            <h3><i class="fas fa-palette"></i> Design Resources</h3>
+            <div class="resource-content">
+              <ul class="resource-list">
+                <li>
+                  <a
+                    href="https://canva.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fas fa-draw-polygon"></i>
+                    <div class="resource-info">
+                      <h4>Canva</h4>
+                      <p>
+                        Versatile online platform for easy graphic design and
+                        visual creation
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://coolors.co/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fas fa-swatchbook"></i>
+                    <div class="resource-info">
+                      <h4>Coolors</h4>
+                      <p>
+                        Color palette generator for creating harmonious color
+                        schemes
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.figma.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fab fa-figma"></i>
+                    <div class="resource-info">
+                      <h4>Figma</h4>
+                      <p>
+                        Collaborative interface design tool with prototyping
+                        capabilities
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://fontawesome.com/icons"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-regular fa-font-awesome"></i>
+                    <div class="resource-info">
+                      <h4>Font Awesome</h4>
+                      <p>Popular library that provides scalable vector icons</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://fonts.google.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fas fa-font"></i>
+                    <div class="resource-info">
+                      <h4>Google Fonts</h4>
+                      <p>Free and open-source font library for web projects</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://mobbin.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-m"></i>
+                    <div class="resource-info">
+                      <h4>Mobbin</h4>
+                      <p>
+                        Library of real-world app UI/UX design inspiration and
+                        flows
+                      </p>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="resource-card">
+            <h3><i class="fas fa-code"></i> Development Resources</h3>
+            <div class="resource-content">
+              <ul class="resource-list">
+                <li>
+                  <a
+                    href="https://100devs.org/about"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <div class="resource-info">
+                      <h4>100Devs</h4>
+                      <p>
+                        Free Software engineering bootcamp and community focused
+                        on job placement
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://css-tricks.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fab fa-css3-alt"></i>
+                    <div class="resource-info">
+                      <h4>CSS-Tricks</h4>
+                      <p>
+                        Daily articles about CSS, HTML, JavaScript, and all
+                        things web design
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://html5up.net/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-file-code"></i>
+                    <div class="resource-info">
+                      <h4>HTML5 UP</h4>
+                      <p>
+                        Free, fully responsive HTML5 and CSS3 website templates
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.markdownguide.org/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-brands fa-markdown"></i>
+                    <div class="resource-info">
+                      <h4>Markdown Guide</h4>
+                      <p>
+                        Free and open-source reference guide that explains how
+                        to use Markdown
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://developer.mozilla.org/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fab fa-firefox-browser"></i>
+                    <div class="resource-info">
+                      <h4>MDN Web Docs</h4>
+                      <p>
+                        Comprehensive documentation for web standards and
+                        Mozilla projects
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://stackoverflow.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fab fa-stack-overflow"></i>
+                    <div class="resource-info">
+                      <h4>Stack Overflow</h4>
+                      <p>
+                        Community-based space to find and contribute answers to
+                        technical challenges
+                      </p>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="resource-card">
+            <h3><i class="fas fa-tools"></i> Tools & Utilities</h3>
+            <div class="resource-content">
+              <ul class="resource-list">
+                <li>
+                  <a
+                    href="https://cron-job.org/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-stopwatch"></i>
+                    <div class="resource-info">
+                      <h4>Cron-job.org</h4>
+                      <p>
+                        Schedule and automate tasks, such as making HTTP
+                        requests to specific URLs
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://firebase.google.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-fire"></i>
+                    <div class="resource-info">
+                      <h4>Firebase</h4>
+                      <p>
+                        Google platform offering a suite of tools for databases,
+                        authentication, hosting, and analytics
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fab fa-github"></i>
+                    <div class="resource-info">
+                      <h4>GitHub</h4>
+                      <p>
+                        Platform for code hosting, version control, and project
+                        collaboration
+                      </p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.mongodb.com//"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fa-solid fa-database"></i>
+                    <div class="resource-info">
+                      <h4>MongoDB</h4>
+                      <p>The official site for the MongoDB document database</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.postman.com/"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fas fa-paper-plane"></i>
+                    <div class="resource-info">
+                      <h4>Postman</h4>
+                      <p>API platform for building and using APIs</p>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://render.com"
+                    target="_blank"
+                    class="resource-link"
+                  >
+                    <i class="fas fa-globe"></i>
+                    <div class="resource-info">
+                      <h4>Render</h4>
+                      <p>
+                        Cloud platform for easily deploying and hosting
+                        full-stack apps
+                      </p>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script type="module" src="/dashboard/js/utils.js"></script>
+    <script type="module" src="/dashboard/js/api.js"></script>
+    <script type="module" src="/dashboard/js/resources.js"></script>
+    <script type="module" src="/dashboard/js/authApi.js"></script>
+    <script src="/dashboard/js/super-secret.js"></script>
+  </body>
+</html>

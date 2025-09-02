@@ -1,0 +1,76 @@
+<!-- login page -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      href="https://img.icons8.com/?size=100&id=8302&format=png&color=4361ee"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevLeads Login</title>
+    <link rel="stylesheet" href="/dashboard/css/dashboard.css" />
+    <link rel="stylesheet" href="/dashboard/css/login.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script>
+      (function () {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches
+          ? "dark"
+          : "light";
+        document.documentElement.setAttribute("data-theme", systemTheme);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80">
+          <rect x="10" y="15" width="25" height="55" fill="#4361ee" />
+          <rect x="45" y="35" width="25" height="35" fill="#4361ee" />
+          <rect x="80" y="0" width="25" height="70" fill="#4361ee" />
+        </svg>
+      </div>
+      <h1 class="zen-dots">DevLeads</h1>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock" aria-hidden="true"></i>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <a class="forgot-password" id="forgotPasswordLink"
+            >Forgot password?</a
+          >
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+        <button type="submit" class="login-btn">Sign In</button>
+      </form>
+    </div>
+  </body>
+  <script type="module" src="/dashboard/js/login.js"></script>
+</html>

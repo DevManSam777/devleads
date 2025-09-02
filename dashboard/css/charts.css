@@ -1,0 +1,141 @@
+.charts-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 1.5rem 0 3rem;
+  }
+  
+  .chart-card {
+    background-color: var(--card-background);
+    margin-bottom: 1rem;
+    padding: 2rem;
+    border-radius: var(--card-border-radius);
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+    min-width: 0; 
+  }
+  
+  .chart-card h3 {
+    font-size: 1.6rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .chart-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9; 
+    min-height: 20rem;
+    max-height: 35rem;
+  }
+  
+  .chart-no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+    canvas {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+  }
+
+  @media (max-width: 1200px) {
+    .charts-cards {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+  
+    .chart-card {
+      padding: 1.5rem;
+    }
+  
+    .chart-container {
+      max-height: 30rem;
+      min-height: 18rem;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .charts-cards {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+  
+    .chart-card {
+      padding: 1rem;
+    }
+  
+    .chart-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+  
+    .chart-container {
+      max-height: 25rem;
+      min-height: 15rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .charts-cards {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  
+    .chart-card {
+      padding: 1.5rem;
+    }
+  
+    .chart-container {
+      aspect-ratio: 4 / 3; 
+      height: 25rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .charts-cards {
+      gap: 1rem;
+    }
+  
+    .chart-card {
+      padding: 1rem;
+    }
+  
+    .chart-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+  
+    .chart-container {
+      aspect-ratio: 3 / 2; 
+      height: 20rem;
+      min-width: 0; 
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .chart-card {
+      padding: 0.75rem;
+    }
+  
+    .chart-container {
+      height: 18rem;
+    }
+  
+    .chart-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+  
