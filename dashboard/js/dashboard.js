@@ -1589,6 +1589,10 @@ function sortLeadsAndRender(leadsToSort) {
 // Export functionality
 function showExportModal() {
   const modal = document.getElementById("exportModal");
+  const modalTitle = document.getElementById("exportModalTitle");
+  
+  // Reset modal title for bulk export
+  modalTitle.textContent = "Export All Leads";
   modal.style.display = "block";
   
   // Setup export modal event listeners
