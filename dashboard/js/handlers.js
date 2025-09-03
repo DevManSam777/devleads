@@ -462,7 +462,7 @@ async function saveLead() {
   const paidAmountInput = document.getElementById("paidAmount");
   if (paidAmountInput && leadData.totalBudget !== undefined) {
     const paidAmount = parseFloat(paidAmountInput.value.replace(/[^\d.-]/g, "")) || 0;
-    leadData.remainingBalance = Math.max(0, leadData.totalBudget - paidAmount);
+    leadData.remainingBalance = leadData.totalBudget - paidAmount;
   }
 
   try {

@@ -513,7 +513,7 @@ async function validateAndSavePayment(event) {
     }, 0);
 
     // calculate remaining balance
-    const remainingBalance = Math.max(0, totalBudget - totalPaid);
+    const remainingBalance = totalBudget - totalPaid;
 
     // update the lead with both the paidAmount and remainingBalance
     const finalUpdateData = {
