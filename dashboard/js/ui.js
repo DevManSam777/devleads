@@ -501,15 +501,15 @@ function calculateStats(allLeads, payments) {
     console.log(`Previous period payments: ${previousMonthPayments.length}`);
 
     // calculate totals
-    const currentMonthTotal = currentMonthPayments.reduce((sum, payment) => {
+    const currentMonthTotal = parseFloat(currentMonthPayments.reduce((sum, payment) => {
       const amount = parseFloat(payment.amount);
       return sum + (isNaN(amount) ? 0 : amount);
-    }, 0);
+    }, 0).toFixed(2));
 
-    const previousMonthTotal = previousMonthPayments.reduce((sum, payment) => {
+    const previousMonthTotal = parseFloat(previousMonthPayments.reduce((sum, payment) => {
       const amount = parseFloat(payment.amount);
       return sum + (isNaN(amount) ? 0 : amount);
-    }, 0);
+    }, 0).toFixed(2));
 
     console.log(`Current period total: $${currentMonthTotal}`);
     console.log(`Previous period total: $${previousMonthTotal}`);
@@ -553,10 +553,10 @@ function calculateStats(allLeads, payments) {
     }
 
     // total earnings calculation 
-    const totalEarnings = validPayments.reduce((sum, payment) => {
+    const totalEarnings = parseFloat(validPayments.reduce((sum, payment) => {
       const amount = parseFloat(payment.amount);
       return sum + (isNaN(amount) ? 0 : amount);
-    }, 0);
+    }, 0).toFixed(2));
 
     console.log(`Total earnings (all-time): $${totalEarnings}`);
 
@@ -615,7 +615,7 @@ async function exportSingleLead(leadId) {
     const leadWithPayments = {
       ...lead,
       paymentCount: leadPayments.length,
-      totalPayments: leadPayments.reduce((sum, payment) => sum + payment.amount, 0),
+      totalPayments: parseFloat(leadPayments.reduce((sum, payment) => sum + payment.amount, 0).toFixed(2)),
       payments: leadPayments.map(payment => ({
         amount: payment.amount,
         paymentDate: payment.paymentDate,

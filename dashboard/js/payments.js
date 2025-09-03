@@ -507,10 +507,10 @@ async function validateAndSavePayment(event) {
     const updatedLeadPayments = await fetchLeadPayments(leadId);
 
     // calculate the total paid for this lead
-    const totalPaid = updatedLeadPayments.reduce((sum, payment) => {
+    const totalPaid = parseFloat(updatedLeadPayments.reduce((sum, payment) => {
       const amount = parseFloat(payment.amount) || 0;
       return sum + amount;
-    }, 0);
+    }, 0).toFixed(2));
 
     // calculate remaining balance
     const remainingBalance = parseFloat((totalBudget - totalPaid).toFixed(2));
@@ -607,10 +607,10 @@ async function deletePaymentAction(paymentId, leadId) {
     console.log("Updated payments after deletion:", leadPayments);
 
     // calculate the total paid
-    const totalPaid = leadPayments.reduce((sum, payment) => {
+    const totalPaid = parseFloat(leadPayments.reduce((sum, payment) => {
       const amount = parseFloat(payment.amount) || 0;
       return sum + amount;
-    }, 0);
+    }, 0).toFixed(2));
 
     // update paid amount field
     const paidAmountField = document.getElementById("paidAmount");

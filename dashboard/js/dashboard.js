@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         
         // Payment Summary
         paymentCount: leadPayments.length,
-        totalPayments: leadPayments.reduce((sum, payment) => sum + payment.amount, 0),
+        totalPayments: parseFloat(leadPayments.reduce((sum, payment) => sum + payment.amount, 0).toFixed(2)),
         
         // Individual Payments
         payments: leadPayments.map(payment => ({
@@ -1624,7 +1624,7 @@ async function exportAllLeads(format) {
         try {
           const payments = await API.fetchLeadPayments(lead._id);
           const paymentCount = payments.length;
-          const totalPayments = payments.reduce((sum, payment) => sum + payment.amount, 0);
+          const totalPayments = parseFloat(payments.reduce((sum, payment) => sum + payment.amount, 0).toFixed(2));
           
           return {
             // Lead ID and Personal Info First
