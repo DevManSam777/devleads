@@ -664,7 +664,7 @@
   function showExitButton() {
     const exitButton = document.createElement("button");
     exitButton.id = "pizza-exit-button";
-    exitButton.textContent = "Exit Pizza Mode";
+    exitButton.textContent = "Exit Pizza Party";
     exitButton.style.cssText = `
             position: fixed;
             top: 100px;
