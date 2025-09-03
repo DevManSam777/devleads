@@ -164,7 +164,7 @@ async function updateLeadPaymentInfo(leadId) {
     console.log(`Found ${payments.length} payments for lead ${leadId}`);
     
     // calculate total paid amount
-    const paidAmount = payments.reduce((total, payment) => total + payment.amount, 0);
+    const paidAmount = parseFloat(payments.reduce((total, payment) => total + payment.amount, 0).toFixed(2));
     console.log(`Calculated paidAmount: ${paidAmount}`);
     
     // get the lead
