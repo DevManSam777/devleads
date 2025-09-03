@@ -111,56 +111,92 @@ exports.updatePayment = async (req, res) => {
 // delete payment
 exports.deletePayment = async (req, res) => {
   try {
+    console.log(`Attempting to delete payment: ${req.params.id}`);
+    
     const payment = await Payment.findById(req.params.id);
     
     if (!payment) {
+      console.log(`Payment not found: ${req.params.id}`);
       return res.status(404).json({ message: 'Payment not found' });
     }
     
     const leadId = payment.leadId;
+    console.log(`Payment belongs to lead: ${leadId}`);
     
     // delete payment
-    await Payment.deleteOne({ _id: req.params.id });
+    const deleteResult = await Payment.deleteOne({ _id: req.params.id });
+    console.log(`Payment deletion result:`, deleteResult);
+    
+    if (deleteResult.deletedCount === 0) {
+      console.error(`Failed to delete payment: ${req.params.id}`);
+      return res.status(500).json({ message: 'Failed to delete payment' });
+    }
     
     // update lead's paid amount and payment status
-    await updateLeadPaymentInfo(leadId);
+    console.log(`Updating payment info for lead: ${leadId}`);
+    try {
+      await updateLeadPaymentInfo(leadId);
+      console.log(`Successfully updated payment info for lead: ${leadId}`);
+    } catch (updateError) {
+      console.error(`Failed to update lead payment info for ${leadId}:`, updateError);
+      // Still return success for payment deletion, but log the update failure
+      return res.status(200).json({ 
+        message: 'Payment deleted but failed to update lead totals',
+        warning: 'Lead payment totals may be incorrect'
+      });
+    }
     
     res.json({ message: 'Payment removed' });
   } catch (error) {
     console.error('Error deleting payment:', error);
-    res.status(500).json({ message: 'Server Error' });
+    console.error('Error details:', error.message);
+    res.status(500).json({ message: 'Server Error: ' + error.message });
   }
 };
 
 // helper function to update lead payment info
 async function updateLeadPaymentInfo(leadId) {
   try {
+    console.log(`Starting payment info update for lead: ${leadId}`);
+    
     // get all payments for the lead
     const payments = await Payment.find({ leadId });
+    console.log(`Found ${payments.length} payments for lead ${leadId}`);
     
     // calculate total paid amount
     const paidAmount = payments.reduce((total, payment) => total + payment.amount, 0);
+    console.log(`Calculated paidAmount: ${paidAmount}`);
     
     // get the lead
     const lead = await Lead.findById(leadId);
     
     if (!lead) {
+      console.error(`Lead not found: ${leadId}`);
       throw new Error('Lead not found');
     }
     
     // calculate remaining balance
     const totalBudget = lead.totalBudget || 0;
     const remainingBalance = totalBudget - paidAmount;
+    console.log(`totalBudget: ${totalBudget}, paidAmount: ${paidAmount}, calculated remainingBalance: ${remainingBalance}`);
     
     // update lead with payment-related fields
-    await Lead.findByIdAndUpdate(leadId, { 
+    const updateResult = await Lead.findByIdAndUpdate(leadId, { 
       paidAmount,
       remainingBalance
-    });
+    }, { new: true });
+    
+    if (!updateResult) {
+      console.error(`Failed to update lead ${leadId} - no result returned`);
+      throw new Error('Failed to update lead payment info');
+    }
+    
+    console.log(`Successfully updated lead ${leadId} - paidAmount: ${updateResult.paidAmount}, remainingBalance: ${updateResult.remainingBalance}`);
     
     return { paidAmount, remainingBalance };
   } catch (error) {
     console.error('Error updating lead payment info:', error);
+    console.error('Error details:', error.message);
     throw error;
   }
 }
