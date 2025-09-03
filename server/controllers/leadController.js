@@ -112,6 +112,15 @@ exports.updateLead = async (req, res) => {
       req.body.lastContactedAt = Date.now();
     }
 
+    // if totalBudget is being updated, recalculate remainingBalance
+    if (req.body.hasOwnProperty('totalBudget') && req.body.totalBudget !== lead.totalBudget) {
+      const newTotalBudget = req.body.totalBudget || 0;
+      const currentPaidAmount = lead.paidAmount || 0;
+      req.body.remainingBalance = Math.max(0, newTotalBudget - currentPaidAmount);
+      
+      console.log(`Recalculating remainingBalance for lead ${req.params.id}: totalBudget=${newTotalBudget}, paidAmount=${currentPaidAmount}, remainingBalance=${req.body.remainingBalance}`);
+    }
+
     // rest of your existing update code...
     const updatedLead = await Lead.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
