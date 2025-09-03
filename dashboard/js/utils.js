@@ -73,7 +73,8 @@ function restrictToDigits(input) {
       .replace(/[^\d]/g, "");
     const afterDecimal = value
       .substring(decimalIndex + 1)
-      .replace(/[^\d]/g, "");
+      .replace(/[^\d]/g, "")
+      .substring(0, 2); // limit to 2 decimal places
     value = beforeDecimal + "." + afterDecimal;
   } else {
     value = value.replace(/[^\d.]/g, "");
@@ -96,6 +97,47 @@ function restrictToDigits(input) {
   }
 }
 
+function preventExcessDecimals(event, input) {
+  const value = input.value;
+  const key = event.key;
+  const cursorPos = input.selectionStart;
+  
+  // Allow control keys (backspace, delete, tab, escape, enter, etc.)
+  if (event.ctrlKey || event.metaKey || 
+      ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key)) {
+    return;
+  }
+  
+  // Only allow digits and one decimal point
+  if (!/[\d.]/.test(key)) {
+    event.preventDefault();
+    return;
+  }
+  
+  // Check for decimal point rules
+  if (key === '.') {
+    // Prevent multiple decimal points
+    if (value.includes('.')) {
+      event.preventDefault();
+      return;
+    }
+  }
+  
+  // If there's already a decimal point, check decimal places
+  const decimalIndex = value.indexOf('.');
+  if (decimalIndex !== -1) {
+    // If cursor is after decimal point
+    if (cursorPos > decimalIndex) {
+      const afterDecimal = value.substring(decimalIndex + 1);
+      // If already 2 decimal places, prevent more digits
+      if (afterDecimal.length >= 2) {
+        event.preventDefault();
+        return;
+      }
+    }
+  }
+}
+
 function initializeMonetaryInputs() {
   const monetaryInputs = [
     document.getElementById("budget"),
@@ -105,6 +147,11 @@ function initializeMonetaryInputs() {
 
   monetaryInputs.forEach((input) => {
     if (input) {
+      // Add keypress event to prevent typing beyond 2 decimal places
+      input.addEventListener("keypress", function (e) {
+        preventExcessDecimals(e, this);
+      });
+      
       input.addEventListener("input", function () {
         restrictToDigits(this);
       });

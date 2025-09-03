@@ -164,7 +164,9 @@ async function updateLeadPaymentInfo(leadId) {
     console.log(`Found ${payments.length} payments for lead ${leadId}`);
     
     // calculate total paid amount
-    const paidAmount = parseFloat(payments.reduce((total, payment) => total + payment.amount, 0).toFixed(2));
+    const paidAmount = parseFloat(payments.reduce((total, payment) => {
+      return total + parseFloat(payment.amount);
+    }, 0).toFixed(2));
     console.log(`Calculated paidAmount: ${paidAmount}`);
     
     // get the lead
@@ -176,7 +178,7 @@ async function updateLeadPaymentInfo(leadId) {
     }
     
     // calculate remaining balance
-    const totalBudget = lead.totalBudget || 0;
+    const totalBudget = parseFloat((lead.totalBudget || 0).toFixed(2));
     const remainingBalance = parseFloat((totalBudget - paidAmount).toFixed(2));
     console.log(`totalBudget: ${totalBudget}, paidAmount: ${paidAmount}, calculated remainingBalance: ${remainingBalance}`);
     
