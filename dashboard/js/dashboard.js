@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         ) || 0;
 
       // calculate remaining balance
-      const remainingBalance = totalBudget - paidAmount;
+      const remainingBalance = parseFloat((totalBudget - paidAmount).toFixed(2));
 
       // update the remaining balance field with formatting
       // use the Utils.formatCurrency if imported that way

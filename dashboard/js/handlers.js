@@ -462,7 +462,7 @@ async function saveLead() {
   const paidAmountInput = document.getElementById("paidAmount");
   if (paidAmountInput && leadData.totalBudget !== undefined) {
     const paidAmount = parseFloat(paidAmountInput.value.replace(/[^\d.-]/g, "")) || 0;
-    leadData.remainingBalance = leadData.totalBudget - paidAmount;
+    leadData.remainingBalance = parseFloat((leadData.totalBudget - paidAmount).toFixed(2));
   }
 
   try {
@@ -811,7 +811,7 @@ async function openLeadModal(leadId, allLeads) {
   if (lead.totalBudget !== undefined) {
     const totalBudget = parseFloat(lead.totalBudget) || 0;
     const paidAmount = parseFloat(lead.paidAmount) || 0;
-    remainingBalance = totalBudget - paidAmount;
+    remainingBalance = parseFloat((totalBudget - paidAmount).toFixed(2));
   }
 
   const remainingBalanceField = document.getElementById("remainingBalance");

@@ -513,7 +513,7 @@ async function validateAndSavePayment(event) {
     }, 0);
 
     // calculate remaining balance
-    const remainingBalance = totalBudget - totalPaid;
+    const remainingBalance = parseFloat((totalBudget - totalPaid).toFixed(2));
 
     // update the lead with both the paidAmount and remainingBalance
     const finalUpdateData = {
@@ -625,7 +625,7 @@ async function deletePaymentAction(paymentId, leadId) {
       const totalBudgetStr = document.getElementById("totalBudget").value;
       const totalBudget =
         parseFloat(totalBudgetStr.replace(/[^\d.-]/g, "")) || 0;
-      const remainingBalance = totalBudget - totalPaid;
+      const remainingBalance = parseFloat((totalBudget - totalPaid).toFixed(2));
       remainingBalanceField.value = formatCurrency(remainingBalance);
     }
 

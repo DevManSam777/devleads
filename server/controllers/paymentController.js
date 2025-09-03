@@ -177,7 +177,7 @@ async function updateLeadPaymentInfo(leadId) {
     
     // calculate remaining balance
     const totalBudget = lead.totalBudget || 0;
-    const remainingBalance = totalBudget - paidAmount;
+    const remainingBalance = parseFloat((totalBudget - paidAmount).toFixed(2));
     console.log(`totalBudget: ${totalBudget}, paidAmount: ${paidAmount}, calculated remainingBalance: ${remainingBalance}`);
     
     // update lead with payment-related fields

@@ -116,7 +116,7 @@ exports.updateLead = async (req, res) => {
     if (req.body.hasOwnProperty('totalBudget') && req.body.totalBudget !== lead.totalBudget) {
       const newTotalBudget = req.body.totalBudget || 0;
       const currentPaidAmount = lead.paidAmount || 0;
-      req.body.remainingBalance = newTotalBudget - currentPaidAmount;
+      req.body.remainingBalance = parseFloat((newTotalBudget - currentPaidAmount).toFixed(2));
       
       console.log(`Recalculating remainingBalance for lead ${req.params.id}: totalBudget=${newTotalBudget}, paidAmount=${currentPaidAmount}, remainingBalance=${req.body.remainingBalance}`);
     }
