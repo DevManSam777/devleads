@@ -505,6 +505,18 @@ function initializeModalTabs(forceFirstTab = true) {
       this.classList.add("active");
       document.getElementById(`${tabName}-tab`).classList.add("active");
 
+      // Prevent loading documents for Forms tab when creating new lead
+      if (tabName === "forms") {
+        const currentLeadId = document.getElementById("leadId")?.value;
+        if (!currentLeadId || currentLeadId === "") {
+          // This is a new lead - clear any documents that might be showing
+          const documentsContainer = document.getElementById("signedDocumentsList");
+          if (documentsContainer) {
+            documentsContainer.innerHTML = "";
+          }
+        }
+      }
+
       setTimeout(refreshTextareaHeights, 10);
     });
   });
