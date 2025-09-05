@@ -15,60 +15,42 @@ const auth = require("./middleware/auth");
 
 const app = express();
 
-// force canonical domain  
-// for production
+// Force canonical domain 
+// requires custom domain with DNS records for both www and non-www
+// WILL NOT redirect with .onrender.com domains (only non-www version has DNS), so site will only be accessible with .onrender.com site with non-www version
 if (process.env.NODE_ENV === "production") {
   app.use((req, res, next) => {
     const host = req.headers.host;
-    // redirect non-www to www 
-    if (host === "your-domain.com") {
-      return res.redirect(301, "https://www.your-domain.com" + req.originalUrl);
+    // redirect www to non-www
+    if (host === `www.${process.env.DOMAIN}`) {
+      return res.redirect(301, `https://${process.env.DOMAIN}` + req.originalUrl);
     }
     next();
   });
 }
 
-// CORS & API ROUTES FIRST
-// special middleware just for the leads API endpoint to work with web component
-app.use("/api/leads", (req, res, next) => {
-  // allow requests from any origin
-  res.header("Access-Control-Allow-Origin", "*");
-  // allow the necessary methods
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  // allow the necessary headers
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-
-  // handle preflight requests immediately
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
-  next();
-});
-
-// use this for production
-// General CORS configuration for other routes
-// PRODUCTION CORS configuration - uncomment and modify for production use
+// PRODUCTION CORS configuration - uncomment for production use
 // const corsOptions = {
 //   origin: function (origin, callback) {
-//     // List of allowed origins (add your production and development URLs)
 //     const allowedOrigins = [
-//       // Production URLs
-//       "https://www.your-domain.com",
-//       "https://your-domain.com",
-//       // Development URLs
+//       `https://${process.env.DOMAIN}`,
+//       `https://www.${process.env.DOMAIN}`,
 //       "http://localhost:3000",
+//       "http://localhost:4321",
 //       "http://localhost:5000",
+//       "http://localhost:5173",
+//       "http://localhost:5500",
+//       "http://localhost:8080",
 //       "http://127.0.0.1:5000",
-//       "http://127.0.0.1:3000"
+//       "http://127.0.0.1:3000",
+//       "http://127.0.0.1:4321",
+//       "http://127.0.0.1:5173",
+//       "http://127.0.0.1:5500",
+//       "http://127.0.0.1:8080"
 //     ];
-
-//     // Allow requests with no origin (like mobile apps, curl requests, etc.)
+//
 //     if (!origin) return callback(null, true);
-
+//
 //     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
 //       callback(null, true);
 //     } else {
@@ -79,17 +61,32 @@ app.use("/api/leads", (req, res, next) => {
 //   credentials: true,
 // };
 
+// Development CORS - comment out in production
 const corsOptions = {
   origin: function (origin, callback) {
-    callback(null, true); // This will allow all origins
+    callback(null, true);
   },
   credentials: true,
 };
 
 app.use(cors(corsOptions));
-
-// explicitly handle preflight requests
+// Handle preflight OPTIONS requests - DO NOT comment out for production
 app.options("*", cors(corsOptions));
+
+// Special middleware for leads API endpoint
+app.use("/api/leads", (req, res, next) => {
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
 
 app.use(express.json({ limit: "50mb" })); 
 
@@ -121,11 +118,12 @@ app.use("/api/documents", auth, documentRoutes);
 app.use("/api/hitlists", auth, hitlistRoutes);
 app.use("/api/scraper", auth, scraperRoutes);
 
-// security headers middleware
+// Security headers middleware - required for web component functionality
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "SAMEORIGIN");
-  // this allows everything from anywhere
+  // Permissive CSP required for web component to work on any website
+  // DO NOT restrict
   res.setHeader(
     "Content-Security-Policy",
     "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
@@ -787,7 +785,8 @@ app.get("/api", (req, res) => {
 function getBaseUrl(port) {
   const isProduction = process.env.NODE_ENV === "production";
   return isProduction
-    ? "https://www.your-domain.com"
+  //docs are disabled in production (ln 198) but keep this here if we need to enable and test later
+    ? `https://${process.env.DOMAIN}`
     : `http://localhost:${port}`;
 }
 

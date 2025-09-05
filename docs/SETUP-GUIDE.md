@@ -715,13 +715,20 @@ _See the README for customization options and styling guidance_
    - When creating the web service, select **"Docker"** as the environment
    - ⚠️ **Do NOT choose Node.js** - Business Finder requires Chrome (only available in Docker)
 3. **Set environment variables** in Render dashboard (Environment tab)
-   - **Create production `.env`**:
+   - **Create production environment variables**:
 
    ```env
    NODE_ENV=production
+   DOMAIN=your-deployed-domain.com
+   # Copy all other variables from your local .env file
    # Update MongoDB URI for production if different
-   # Set all other variables
    ```
+
+   - **⚠️ REQUIRED**: Add `DOMAIN` environment variable with your deployment domain name
+     - Leave out any http://, https://, http://www., or https://www.
+     - Example: `DOMAIN=devleads-demo.onrender.com` (for .onrender.com deployments)  
+     - Example: `DOMAIN=yourdomain.com` (for custom domains)
+   - Copy all other environment variables from your local `.env` file
 
    -  **⚠️ IMPORTANT**: For security, the API documentation endpoint (`/api`) is only accessible in development mode. Setting `NODE_ENV=production` in your environmental variables for your deployed version will automatically disable API documentation access in your production deployment.
 
