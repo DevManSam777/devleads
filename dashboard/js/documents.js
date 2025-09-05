@@ -401,7 +401,8 @@ async function deleteDocument(documentId, leadId) {
 
     try {
       // reload documents list
-      await loadLeadDocuments(leadId);
+      const currentLeadId = document.getElementById("leadId").value;
+      await loadLeadDocuments(currentLeadId);
     } catch (loadError) {
       console.error("Error reloading documents:", loadError);
       Utils.showToast("Error reloading documents. Please refresh the page.");
