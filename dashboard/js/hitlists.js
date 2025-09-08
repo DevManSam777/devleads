@@ -294,6 +294,9 @@ function renderHitlists(hitlists) {
           hitlist.name
         }</h3>
         <div class="hitlist-actions">
+          <button class="btn-icon view-hitlist" title="View">
+            <i class="fas fa-eye"></i>
+          </button>
           <button class="btn-icon edit-hitlist" title="Edit">
             <i class="fas fa-edit"></i>
           </button>
@@ -340,6 +343,11 @@ function renderHitlists(hitlists) {
       if (!e.target.closest(".hitlist-actions")) {
         openBusinessListModal(this.dataset.id);
       }
+    });
+
+    card.querySelector(".view-hitlist").addEventListener("click", function (e) {
+      e.stopPropagation();
+      openBusinessListModal(card.dataset.id);
     });
 
     card.querySelector(".edit-hitlist").addEventListener("click", function (e) {
