@@ -165,6 +165,14 @@
   transition: color 0.2s ease;
 }
 
+.hitlist-card .hitlist-actions .view-hitlist:hover {
+  background-color: var(--primary);
+}
+
+.hitlist-card .hitlist-actions .view-hitlist:hover i {
+  color: white;
+}
+
 .hitlist-card .hitlist-actions .edit-hitlist:hover {
   background-color: var(--primary);
 }
