@@ -1,8 +1,7 @@
-// Import required dependencies
 import { fetchHitlists, createHitlist } from './api.js';
 import { showToast } from './utils.js';
 
-// Create api object with request method for consistency with existing code
+// create api object with request method 
 const api = {
   request: async (endpoint, options = {}) => {
     const method = options.method || 'GET';
@@ -11,7 +10,7 @@ const api = {
       return { data: await fetchHitlists() };
     }
     
-    // For other API calls, use the built-in fetch with auth headers
+    // for other API calls, use the built-in fetch with auth headers
     const response = await fetch(endpoint, {
       method,
       headers: {
@@ -29,7 +28,7 @@ const api = {
   }
 };
 
-// Business Scraper functionality
+// business Scraper functionality
 class BusinessScraper {
   constructor() {
     this.currentJobId = null;
@@ -53,13 +52,13 @@ class BusinessScraper {
   }
 
   setupEventListeners() {
-    // Find Businesses button
+    // find Businesses button
     const findBusinessesBtn = document.getElementById('findBusinessesBtn');
     if (findBusinessesBtn) {
       findBusinessesBtn.addEventListener('click', () => this.openScraperModal());
     }
 
-    // Slider value update
+    // slider value update
     const maxResultsSlider = document.getElementById('maxResults');
     const maxResultsValue = document.getElementById('maxResultsValue');
     
@@ -69,7 +68,7 @@ class BusinessScraper {
       });
     }
 
-    // Modal controls
+    // modal controls
     const closeModal = document.getElementById('closeScraperModal');
     const cancelBtn = document.getElementById('cancelScraperBtn');
     const scraperForm = document.getElementById('scraperForm');
@@ -77,7 +76,7 @@ class BusinessScraper {
     const searchAgainBtn = document.getElementById('searchAgainBtn');
     const viewHitlistBtn = document.getElementById('viewHitlistBtn');
     
-    // New hitlist creation
+    // new hitlist creation
     const createNewHitlistBtn = document.getElementById('createNewHitlistBtn');
     const quickHitlistModal = document.getElementById('quickHitlistModal');
     const closeQuickModal = document.getElementById('closeQuickHitlistModal');
@@ -96,16 +95,16 @@ class BusinessScraper {
     if (cancelQuickBtn) cancelQuickBtn.addEventListener('click', () => this.closeQuickHitlistModal());
     if (quickHitlistForm) quickHitlistForm.addEventListener('submit', (e) => this.handleQuickHitlistSubmit(e));
 
-    // Close modals when clicking outside (but prevent during active search)
+    // close modals when clicking outside but prevent during active search
     window.addEventListener('click', (event) => {
       const modal = document.getElementById('scraperModal');
       const quickModal = document.getElementById('quickHitlistModal');
       
-      // Don't close scraper modal if a search is in progress
+      // don't close scraper modal if a search is in progress
       if (event.target === modal && !this.isPolling) {
         this.closeScraperModal();
       } else if (event.target === modal && this.isPolling) {
-        // Show warning if they try to close during search
+        // show warning if they try to close during search
         showToast('Do not close while searching - use Cancel to stop', 'info');
       }
       
@@ -116,18 +115,18 @@ class BusinessScraper {
   }
 
   setupVisibilityHandler() {
-    // Handle visibility changes (mobile hibernation/wake)
+    // handle visibility changes (mobile hibernation/wake)
     this.visibilityChangeHandler = () => {
       if (!document.hidden && this.currentJobId && !this.isPolling) {
-        // Page became visible again and we have a job - resume polling
+        // page became visible again and we have a job - resume polling
         console.log('Page visibility restored, resuming job polling');
         this.debouncedResumePolling();
       }
     };
     
     document.addEventListener('visibilitychange', this.visibilityChangeHandler);
-    
-    // Also handle page focus events for additional reliability
+
+    // also handle page focus events for additional reliability
     window.addEventListener('focus', () => {
       if (this.currentJobId && !this.isPolling) {
         console.log('Window focus restored, resuming job polling');
@@ -137,12 +136,12 @@ class BusinessScraper {
   }
 
   debouncedResumePolling() {
-    // Clear any existing timeout to prevent multiple rapid calls
+    // clear any existing timeout to prevent multiple rapid calls
     if (this.resumeTimeout) {
       clearTimeout(this.resumeTimeout);
     }
-    
-    // Set a small delay to debounce rapid visibility/focus events
+
+    // set a small delay to debounce rapid visibility/focus events
     this.resumeTimeout = setTimeout(() => {
       this.resumePollingAfterHibernation();
       this.resumeTimeout = null;
@@ -153,21 +152,21 @@ class BusinessScraper {
     if (!this.currentJobId) return;
     
     try {
-      // Immediately check job status to catch up
+      // immediately check job status to catch up
       console.log('Checking job status after hibernation...');
       const response = await api.request(`/api/scraper/job/${this.currentJobId}`);
       this.updateProgress(response);
       
       if (response.status === 'completed') {
         this.showCompletion(`Successfully added ${response.savedCount || response.progress} businesses to your hitlist!`);
-        
-        // Only show the completion toast once per job and if user hasn't seen completion screen
+
+        // only show the completion toast once per job and if user hasn't seen completion screen
         if (!this.completionToastShown && !this.userViewedCompletion) {
           showToast('Search completed while screen was off!', 'success');
           this.completionToastShown = true;
         }
-        
-        // Refresh the main hitlists view
+
+        // refresh the main hitlists view
         if (typeof window.fetchAndRenderHitlists === 'function') {
           setTimeout(() => {
             window.fetchAndRenderHitlists();
@@ -180,13 +179,13 @@ class BusinessScraper {
         showToast('Search was cancelled', 'info');
         this.resetForm();
       } else {
-        // Job is still running, resume normal polling
+        // job is still running, resume normal polling
         this.startPolling();
       }
       
     } catch (error) {
       console.error('Failed to resume job status check:', error);
-      // Try to resume polling anyway in case the job is still active
+      // try to resume polling anyway in case the job is still active
       this.startPolling();
     }
   }
@@ -195,17 +194,17 @@ class BusinessScraper {
     const modal = document.getElementById('scraperModal');
     if (!modal) return;
 
-    // Load hitlists for dropdown
+    // load hitlists for dropdown
     await this.populateHitlistDropdown();
-    
-    // Reset form state
+
+    // reset form state
     this.resetForm();
     
     modal.style.display = 'block';
   }
 
   handleModalClose() {
-    // Prevent closing during active search
+    // prevent closing during active search
     if (this.isPolling) {
       showToast('Do not close while searching - use Cancel to stop', 'info');
       return;
@@ -219,22 +218,22 @@ class BusinessScraper {
     if (modal) {
       modal.style.display = 'none';
     }
-    
-    // Cancel any ongoing job
+
+    // cancel any ongoing job
     if (this.currentJobId && this.isPolling) {
       this.cancelCurrentJob();
     }
-    
-    // Only clear state if we're not about to view the target hitlist
+
+    // only clear state if we're not about to view the target hitlist
     if (!preserveTargetHitlist) {
-      // Clear job state and reset completion flags  
+      // clear job state and reset completion flags  
       this.currentJobId = null;
       this.targetHitlistId = null;
       this.completionToastShown = false;
       this.userViewedCompletion = false;
     }
-    
-    // Clean up visibility handler
+
+    // clean up visibility handler
     if (this.visibilityChangeHandler) {
       document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
       this.visibilityChangeHandler = null;
@@ -248,14 +247,14 @@ class BusinessScraper {
       
       const select = document.getElementById('targetHitlist');
       if (!select) return;
-      
-      // Clear existing options except the first one
+
+      // clear existing options except the first one
       select.innerHTML = '<option value="">Select a hitlist...</option>';
-      
-      // Sort hitlists alphabetically by name
+
+      // sort hitlists alphabetically by name
       const sortedHitlists = hitlists.sort((a, b) => a.name.localeCompare(b.name));
-      
-      // Add hitlist options with business count info
+
+      // add hitlist options with business count info
       sortedHitlists.forEach(hitlist => {
         const option = document.createElement('option');
         option.value = hitlist._id;
@@ -263,8 +262,8 @@ class BusinessScraper {
         option.textContent = `${hitlist.name} (${businessCount} businesses)`;
         select.appendChild(option);
       });
-      
-      // Update info text based on selection
+
+      // update info text based on selection
       select.addEventListener('change', () => this.updateHitlistInfo());
       
     } catch (error) {
@@ -340,8 +339,8 @@ class BusinessScraper {
     const modal = document.getElementById('quickHitlistModal');
     if (modal) {
       modal.style.display = 'block';
-      
-      // Auto-populate name and description based on search terms if available
+
+      // auto-populate name and description based on search terms if available
       const searchTerm = document.getElementById('searchTerm')?.value.trim();
       const location = document.getElementById('searchLocation')?.value.trim();
       
@@ -357,8 +356,8 @@ class BusinessScraper {
           descriptionField.value = location;
         }
       }
-      
-      // Focus on name field
+
+      // focus on name field
       setTimeout(() => {
         const nameField = document.getElementById('quickHitlistName');
         if (nameField) nameField.focus();
@@ -370,8 +369,8 @@ class BusinessScraper {
     const modal = document.getElementById('quickHitlistModal');
     if (modal) {
       modal.style.display = 'none';
-      
-      // Clear form
+
+      // clear form
       const form = document.getElementById('quickHitlistForm');
       if (form) form.reset();
     }
@@ -393,14 +392,14 @@ class BusinessScraper {
         name,
         description: description || `Businesses found for: ${name}`
       });
-      
-      // Close quick modal
+
+      // close quick modal
       this.closeQuickHitlistModal();
-      
-      // Refresh the hitlist dropdown
+
+      // refresh the hitlist dropdown
       await this.populateHitlistDropdown();
-      
-      // Select the new hitlist
+
+      // select the new hitlist
       const select = document.getElementById('targetHitlist');
       if (select) {
         select.value = newHitlist._id;
@@ -430,29 +429,29 @@ class BusinessScraper {
     if (completionText) {
       completionText.textContent = message;
     }
-    
-    // Mark that user has viewed the completion screen
+
+    // mark that user has viewed the completion screen
     this.userViewedCompletion = true;
   }
 
   resetForm() {
-    // Show form, hide progress and completion
+    // show form, hide progress and completion
     document.getElementById('scraperForm').style.display = 'block';
     document.getElementById('scraperProgress').style.display = 'none';
     document.getElementById('scraperComplete').style.display = 'none';
-    
-    // Clear form fields
+
+    // clear form fields
     document.getElementById('searchTerm').value = '';
     document.getElementById('searchLocation').value = '';
     document.getElementById('targetHitlist').value = '';
-    
-    // Reset progress
+
+    // reset progress
     document.getElementById('progressFill').style.width = '0%';
     document.getElementById('progressText').textContent = '0 businesses found';
     document.getElementById('progressMessage').textContent = 'Ready to search...';
     document.getElementById('progressResults').style.display = 'none';
-    
-    // Clear job state and reset completion flags
+
+    // clear job state and reset completion flags
     this.currentJobId = null;
     this.targetHitlistId = null;
     this.completionToastShown = false;
@@ -460,8 +459,8 @@ class BusinessScraper {
     this.retryCount = 0;
     this.networkErrorToastShown = false;
     this.stopPolling();
-    
-    // Clear any pending retry timeouts
+
+    // clear any pending retry timeouts
     if (this.delayedRetryTimeout) {
       clearTimeout(this.delayedRetryTimeout);
       this.delayedRetryTimeout = null;
@@ -473,10 +472,10 @@ class BusinessScraper {
     
     this.isPolling = true;
     this.lastStatusCheck = Date.now();
-    this.retryCount = 0; // Reset retry count when successfully polling
-    this.networkErrorToastShown = false; // Reset toast flag
-    
-    // Clear any pending retry attempts since we're back to normal polling
+    this.retryCount = 0; // reset retry count when successfully polling
+    this.networkErrorToastShown = false; // reset toast flag
+
+    // clear any pending retry attempts since we're back to normal polling
     if (this.delayedRetryTimeout) {
       clearTimeout(this.delayedRetryTimeout);
       this.delayedRetryTimeout = null;
@@ -508,17 +507,17 @@ class BusinessScraper {
       if (response.status === 'completed') {
         this.stopPolling();
         this.showCompletion(`Successfully added ${response.savedCount || response.progress} businesses to your hitlist!`);
-        
-        // Refresh the main hitlists view to show new/updated hitlist
+
+        // refresh the main hitlists view to show new/updated hitlist
         if (typeof window.fetchAndRenderHitlists === 'function') {
-          // Refresh the main hitlists display
+          // refresh the main hitlists display
           setTimeout(() => {
             window.fetchAndRenderHitlists();
           }, 500);
         } else if (this.targetHitlistId && typeof window.refreshHitlistAfterImport === 'function') {
           window.refreshHitlistAfterImport(this.targetHitlistId);
         } else {
-          // Fallback: reload the page to show updated data
+          // fallback: reload the page to show updated data
           setTimeout(() => window.location.reload(), 1000);
         }
         
@@ -536,7 +535,7 @@ class BusinessScraper {
     } catch (error) {
       console.error('Failed to check job status:', error);
       this.stopPolling();
-      
+
       // try to recover, check if job might have completed
       this.handleNetworkError();
     }
@@ -545,11 +544,11 @@ class BusinessScraper {
   async handleNetworkError() {
     console.log('Network error detected, attempting to recover job status...');
     this.retryCount++;
-    
-    // Don't show error toast immediately - try to recover first
+
+    // don't show error toast immediately - try to recover first
     if (this.currentJobId) {
       try {
-        // Wait a moment before retrying to handle temporary network issues
+        // wait a moment before retrying to handle temporary network issues
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         console.log('Checking if job is still running after network error...');
@@ -558,8 +557,8 @@ class BusinessScraper {
         if (response.status === 'completed') {
           this.showCompletion(`Search completed! Found ${response.savedCount || response.progress} businesses.`);
           showToast('Search completed successfully!', 'success');
-          
-          // Refresh the hitlists view
+
+          // refresh the hitlists view
           if (typeof window.fetchAndRenderHitlists === 'function') {
             setTimeout(() => {
               window.fetchAndRenderHitlists();
@@ -567,7 +566,7 @@ class BusinessScraper {
           }
           return;
         } else if (response.status === 'scraping' || response.status === 'saving') {
-          // Job is still running - resume polling
+          // job is still running - resume polling
           console.log('Job is still active, resuming polling...');
           this.updateProgress(response);
           this.startPolling();
@@ -577,17 +576,17 @@ class BusinessScraper {
         console.log('Recovery attempt failed:', retryError);
       }
     }
-    
-    // Silent recovery - no toast spam
-    
-    // Keep checking periodically but limit retries
+
+    // silent recovery - no toast spam
+
+    // keep checking periodically but limit retries
     if (this.retryCount < this.maxRetries) {
       this.delayedRetryTimeout = setTimeout(() => {
         if (this.currentJobId && !this.isPolling) {
           console.log(`Attempting delayed recovery (${this.retryCount}/${this.maxRetries})...`);
           this.debouncedResumePolling();
         }
-      }, 10000); // Try again in 10 seconds
+      }, 10000); // try again in 10 seconds
     } else {
       console.log('Max recovery attempts reached, stopping retries');
     }
@@ -609,8 +608,8 @@ class BusinessScraper {
       progressResults: !!progressResults,
       progressHeader: !!progressHeader
     });
-    
-    // Update progress header with spinner for saving phase
+
+    // update progress header with spinner for saving phase
     if (progressHeader) {
       if (jobStatus.status === 'saving') {
         progressHeader.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Saving to database...`;
@@ -618,19 +617,19 @@ class BusinessScraper {
         progressHeader.innerHTML = `<i class="fas fa-search"></i> Searching for businesses...`;
       }
     }
-    
+
     if (progressMessage) {
-      // For saving phase, show a different message than header
+      // for saving phase, show a different message than header
       if (jobStatus.status === 'saving') {
         progressMessage.innerHTML = `<i class="fas fa-database"></i> Processing and checking for duplicates...`;
       } else {
         progressMessage.textContent = jobStatus.message || 'Searching...';
       }
     }
-    
+
     if (progressText) {
       if (jobStatus.status === 'saving') {
-        // Show saving progress count
+        // show saving progress count
         const savedCount = jobStatus.savedProgress || 0;
         const totalCount = jobStatus.totalToSave || jobStatus.progress || 0;
         progressText.textContent = `${savedCount} of ${totalCount} processed`;
@@ -638,29 +637,29 @@ class BusinessScraper {
         progressText.textContent = `${jobStatus.progress || 0} businesses found`;
       }
     }
-    
-    // Update progress bar
+
+    // update progress bar
     if (progressFill) {
       if (jobStatus.status === 'saving') {
-        // Show saving progress as percentage
+        // show saving progress as percentage
         const savedCount = jobStatus.savedProgress || 0;
         const totalCount = jobStatus.totalToSave || 1;
         const savingProgress = (savedCount / totalCount) * 100;
         console.log(`Saving progress: ${savedCount}/${totalCount} = ${savingProgress}%`);
         progressFill.style.width = `${Math.min(savingProgress, 100)}%`;
       } else {
-        // Show scraping progress based on business count and target
+        // show scraping progress based on business count and target
         const businessCount = jobStatus.progress || 0;
         const maxResultsSlider = document.getElementById('maxResults');
         const targetResults = maxResultsSlider ? parseInt(maxResultsSlider.value) : 100;
-        
-        // Calculate progress based on businesses found vs target, cap at 85% during scraping
+
+        // calculate progress based on businesses found vs target, cap at 85% during scraping
         let estimatedProgress = 0;
         if (businessCount > 0 && targetResults > 0) {
           estimatedProgress = Math.min((businessCount / targetResults) * 85, 85);
         }
-        
-        // Ensure minimum visual progress after businesses start appearing
+
+        // ensure minimum visual progress after businesses start appearing
         if (businessCount > 0 && estimatedProgress < 5) {
           estimatedProgress = 5;
         }
@@ -671,10 +670,10 @@ class BusinessScraper {
     } else {
       console.log('Progress fill element not found!');
     }
-    
-    // Show some results preview
+
+    // show some results preview
     if (jobStatus.results && jobStatus.results.length > 0 && progressResults) {
-      this.updateResultsPreview(jobStatus.results.slice(0, 5)); // Show first 5
+      this.updateResultsPreview(jobStatus.results.slice(0, 5)); // show first 5
       progressResults.style.display = 'block';
     }
   }
@@ -728,22 +727,22 @@ class BusinessScraper {
 
   viewTargetHitlist() {
     if (this.targetHitlistId && typeof window.openBusinessListModal === 'function') {
-      // Store the ID in a local variable before closing modal
+      // store the ID in a local variable before closing modal
       const hitlistId = this.targetHitlistId;
-      
-      // Close scraper modal but preserve the target hitlist info
+
+      // close scraper modal but preserve the target hitlist info
       this.closeScraperModal(true);
-      
-      // Refresh hitlists first, then open the specific one
+
+      // refresh hitlists first, then open the specific one
       setTimeout(async () => {
         console.log('Refreshing hitlists and opening modal with hitlist ID:', hitlistId);
-        
-        // Refresh the hitlists to ensure we have the updated data
+
+        // refresh the hitlists to ensure we have the updated data
         if (typeof window.fetchAndRenderHitlists === 'function') {
           await window.fetchAndRenderHitlists();
         }
-        
-        // Small delay to ensure refresh completes
+
+        // small delay to ensure refresh completes
         setTimeout(() => {
           window.openBusinessListModal(hitlistId);
         }, 100);
@@ -757,7 +756,7 @@ class BusinessScraper {
   }
 }
 
-// Initialize scraper when page loads
+// initialize scraper when page loads
 let businessScraper;
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -765,5 +764,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   await businessScraper.init();
 });
 
-// Export for use in other modules
+// export for use in other modules
 window.businessScraper = businessScraper;
