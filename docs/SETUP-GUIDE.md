@@ -18,8 +18,8 @@ Complete step-by-step guide to deploy your own DevLeads instance.
 8. [Installation & Development](#installation--development)
 9. [Customization Guide](#customization-guide)
 10. [Create Your GitHub Repository](#create-your-github-repository)
-11. [Web Forms Integration (Optional)](#web-forms-integration-optional-but-highly-recommended)
-12. [Production Deployment](#production-deployment)
+11. [Production Deployment](#production-deployment)
+12. [Web Forms Integration (Optional)](#web-forms-integration-optional-but-highly-recommended)
 13. [Configuration Checklist](#configuration-checklist)
 14. [Troubleshooting](#troubleshooting)
 
@@ -44,7 +44,7 @@ Complete step-by-step guide to deploy your own DevLeads instance.
 
 Before you begin, ensure you have:
 
-- **Node.js** (v16 or higher) - [Download here](https://nodejs.org/)
+- **Node.js** - [Download here](https://nodejs.org/)
 - **npm** or **yarn** package manager
 - **Git** for version control
 - **Text editor** (VS Code recommended)
@@ -75,7 +75,7 @@ Before you begin, ensure you have:
 
 ![MFA Setup](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_Atlas_mfa_setup.png)
 
-4. **Complete the welcome questionnaire**:
+4. **Complete the welcome questionnaire or skip**:
    - **Primary goal**: Select "Build a project I have in mind"
    - **MongoDB experience**: Select your experience level
    - **Programming language**: Choose "JavaScript / Node.js"
@@ -89,6 +89,7 @@ Before you begin, ensure you have:
 
 6. **Deploy your cluster** - Choose the **Free** tier:
    - Select **"Free"** cluster option
+   - **Sample data set**: uncheck "preload sample dataset"
    - **Provider**: Choose your preferred cloud provider
    - **Region**: Choose the region closest to your users
    - **Cluster Name**: Use the default name or choose your own
@@ -100,10 +101,10 @@ Before you begin, ensure you have:
 
 ![Security quickstart](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_Atlas_security_quickstart.png)
 
-   - **Username**: Choose a username
-   - **Password**: Use the auto-generated password or create your own
-   - **⚠️ Important**: Copy and save this password - you'll need it for your connection string
-   - Click **"Create Database User"**
+- **Username**: Choose a username
+- **Password**: Use the auto-generated password or create your own
+- **⚠️ Important**: Copy and save this password - you'll need it for your connection string
+- Click **"Create Database User"**
 
 8. **Your cluster will be created** (this takes 1-3 minutes)
 
@@ -119,7 +120,7 @@ Before you begin, ensure you have:
 
 3. **Copy the connection string**:
    - **Driver**: Node.js
-   - **Version**: 4.1 or later (should be selected by default)
+   - **Version**: 6.7 or later (should be selected by default)
 
 ![Connection String](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_Atlas_connection_string.png)
 
@@ -137,11 +138,10 @@ Before you begin, ensure you have:
 
 ![Add IP address](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_add_an_IP_address.png)
 
-   - For development: Add `0.0.0.0/0` (allows access from anywhere)
-   - For production: Add your server's specific IP addresses
+- For development: Add `0.0.0.0/0` (allows access from anywhere)
+- For production: Add your server's specific IP addresses
 
-   ![Set IP](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_add_IP_access.png)
-3. **Confirm**
+![Set IP](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_add_IP_access.png) 3. **Confirm**
 
 4. **You can now sign out of MongoDB Atlas**
 
@@ -173,20 +173,24 @@ Before you begin, ensure you have:
 
 ### Step 2: Get Web App Configuration
 
-1. **Project Settings** (Get Started By Adding Firebase to Your App) → **Web '</>'** 
+1. **Project Settings** (Get Started By Adding Firebase to Your App) → **Web '</>'**
 
 ![Get started by adding firebase to your app](../dashboard/assets/devleads_setup_images/firebase/firebase_choose_web.png)
 
 2. **Register app**:
+
    - Pick an App nickname: e.g. "DevLeads Web"
-   - Don't check hosting checkbox 
+   - Don't check hosting checkbox
 
    ![Register app](../dashboard/assets/devleads_setup_images/firebase/firebase_register_app.png)
-   
+
 3. **Copy the config object**
-   - Copy the Firebase configuration public facing keys locally 
+
+   - Copy the Firebase configuration public facing keys locally
      (you'll need this later for `dashboard/js/authApi.js`):
+
    ```javascript
+   // Your web app's Firebase configuration
    const firebaseConfig = {
      apiKey: "your-api-key",
      authDomain: "your-project.firebaseapp.com",
@@ -194,7 +198,6 @@ Before you begin, ensure you have:
      storageBucket: "your-project.appspot.com",
      messagingSenderId: "123456789",
      appId: "your-app-id",
-     measurementId: "your-measurement-id",
    };
    ```
 
@@ -241,9 +244,11 @@ Before you begin, ensure you have:
 ![Generate Key Dialog](../dashboard/assets/devleads_setup_images/firebase/firebase_generate_key3_new.png)
 
 3. **Download the JSON file** (keep it secure!)
+
    - These will go in .env later
 
 4. **Extract these values** from the JSON file:
+
    - `project_id`
    - `private_key_id`
    - `private_key`
@@ -256,11 +261,12 @@ Before you begin, ensure you have:
    - `universe_domain`
 
 5. **You can now sign out of the Firebase Console**
+
 ---
 
 ## Email Setup (Optional but highly recommended)
 
-Email notifications are optional but highly recommended for lead management. It is set up to work seamlessly with the [web form](#web-forms-integration-optional-but-highly-recommended) web components provided later on in this document. Both you and the person submitting the form are sent email confirmations.
+Email notifications are optional but highly recommended for lead management. It is set up to work seamlessly with the customizable [web form](#web-forms-integration-optional-but-highly-recommended) web components provided later on in this document. Both you and the person submitting the form are sent email confirmations.
 
 ### Understanding Email Password (EMAIL_PASS)
 
@@ -304,7 +310,7 @@ The `EMAIL_PASS` field is where you put your email account's authentication cred
   3. Generate an app-specific password
   4. Save password for .env
 
-### Email Provider Settings 
+### Email Provider Settings
 
 **Gmail (for .env):**
 
@@ -471,7 +477,6 @@ const firebaseConfig = {
   storageBucket: "your-project.appspot.com",
   messagingSenderId: "123456789",
   appId: "your-app-id",
-  measurementId: "your-measurement-id",
 };
 ```
 
@@ -507,7 +512,7 @@ This adds default form templates without affecting any existing data.
 - `npm run seed:reset` - Adds missing default templates (safe, preserves existing forms)
 - `npm run seed:force` - Replaces all templates with defaults (WARNING: deletes existing forms)
 
-**Note:** You can run these commands anytime in the future from the server directory if you need to add or reset form templates.
+**Note:** You can run these commands anytime in the future from the server directory if you need to add or reset seeded form templates. You can create new forms from inside the application. This is just for pre-seeded forms.
 
 ![Command line form seeding](../dashboard/assets/devleads_features/npm_run_seed.png)
 
@@ -649,6 +654,73 @@ git push -u origin main
 
 ---
 
+## Production Deployment
+
+### Recommended Platforms
+
+#### Render (Recommended)
+
+1. **Connect GitHub repository** to Render
+2. **CRITICAL: Choose Docker Environment**
+   - When creating the web service, select **"Docker"** as the environment
+   - ⚠️ **Do NOT choose Node.js** - Business Finder requires Chrome (only available in Docker)
+3. **Set environment variables** in Render dashboard (Environment tab)
+
+   - **Create production environment variables**:
+
+   ```env
+   NODE_ENV=production
+   DOMAIN=your-deployed-domain.com
+   # Copy all other variables from your local .env file
+   # Update MongoDB URI for production if different
+   ```
+
+   - **⚠️ REQUIRED**: Add `DOMAIN` environment variable with your deployment domain name
+     - Leave out any http://, https://, http://www., or https://www.
+     - Example: `DOMAIN=devleads-demo.onrender.com` (for .onrender.com deployments)
+     - Example: `DOMAIN=yourdomain.com` (for custom domains)
+   - Copy all other environment variables from your local `.env` file
+
+   - **⚠️ IMPORTANT**: For security, the API documentation endpoint (`/api`) is only accessible in development mode. Setting `NODE_ENV=production` in your environmental variables for your deployed version will automatically disable API documentation access in your production deployment.
+
+4. **Configure auto-deploy** on commits
+5. **Deploy**:
+   - Click "Create Web Service"
+   - Render builds your Docker image automatically
+   - First deployment takes 5-10 minutes
+   - Subsequent deployments are faster due to layer caching
+
+**Important Render Considerations:**
+
+**RECOMMENDED: Upgrade to a paid plan for persistent storage and no sleep mode.**
+
+**Free Tier Limitations:**
+
+- Email notifications require outbound SMTP which is only available with on paid Render plans
+- Apps sleep after 15 minutes of inactivity (causes ~50 second cold start)
+- 750 hours/month of runtime total for ALL projects, not EACH
+- No persistent disk storage on free tier
+
+#### Other Options
+
+- **Fly.io**: Simple and affordable VM deployment with GitHub integration
+- **Heroku**: Use Heroku CLI or GitHub integration
+- **DigitalOcean**: App Platform or Droplets
+
+---
+
+### Domain Configuration
+
+---
+
+#### After deployment
+
+1. **Update CORS settings** for production domains
+2. **Configure Firebase authorized domains**
+3. **Configure MongoDB Atlas production IPs**
+
+---
+
 ## Web Forms Integration (Optional but highly recommended)
 
 After your DevLeads application is deployed, you can add web forms to your website to automatically capture leads. The styles are customizable, light and dark mode support, and quick and easy to embed in any website.
@@ -701,80 +773,6 @@ _See the README for customization options and styling guidance_
 - Ensure CORS is configured in your DevLeads application for your website domain
 - Forms will automatically create new leads in your DevLeads dashboard
 - Email notifications will be sent (if configured) for new form submissions
-
----
-
-## Production Deployment
-
-### Recommended Platforms
-
-#### Render (Recommended)
-
-1. **Connect GitHub repository** to Render
-2. **CRITICAL: Choose Docker Environment**
-   - When creating the web service, select **"Docker"** as the environment
-   - ⚠️ **Do NOT choose Node.js** - Business Finder requires Chrome (only available in Docker)
-3. **Set environment variables** in Render dashboard (Environment tab)
-   - **Create production environment variables**:
-
-   ```env
-   NODE_ENV=production
-   DOMAIN=your-deployed-domain.com
-   # Copy all other variables from your local .env file
-   # Update MongoDB URI for production if different
-   ```
-
-   - **⚠️ REQUIRED**: Add `DOMAIN` environment variable with your deployment domain name
-     - Leave out any http://, https://, http://www., or https://www.
-     - Example: `DOMAIN=devleads-demo.onrender.com` (for .onrender.com deployments)  
-     - Example: `DOMAIN=yourdomain.com` (for custom domains)
-   - Copy all other environment variables from your local `.env` file
-
-   -  **⚠️ IMPORTANT**: For security, the API documentation endpoint (`/api`) is only accessible in development mode. Setting `NODE_ENV=production` in your environmental variables for your deployed version will automatically disable API documentation access in your production deployment.
-
-4. **Configure auto-deploy** on commits
-5. **Deploy**:
-   - Click "Create Web Service"
-   - Render builds your Docker image automatically
-   - First deployment takes 5-10 minutes
-   - Subsequent deployments are faster due to layer caching
-
-**Important Render Considerations:**
-
-**RECOMMENDED: Upgrade to a paid plan for persistent storage and no sleep mode.**
-
-**Free Tier Limitations:**
-
-- Apps sleep after 15 minutes of inactivity (causes ~50 second cold start)
-- 750 hours/month of runtime total for ALL projects, not EACH
-- No persistent disk storage on free tier
-
-**Free Tier Pro-Tip:** If you are absolutely unable to afford a paid account, as a last resort you can use [cron-job.org](https://cron-job.org) to send an HTTP request to your app every 10 minutes to prevent it from spinning down due to inactivity (use at your own risk)
-
-#### Other Options
-
-- **Railway**: Simple deployment with GitHub integration
-- **Heroku**: Use Heroku CLI or GitHub integration
-- **DigitalOcean**: App Platform or Droplets
-- **Vercel**: For frontend, separate backend deployment needed
-- **Netlify**: For frontend, separate backend deployment needed
-
-<small>- Again, I recommend Render for monolithic deployments such as this</small>
-
-### Domain Configuration
-
-#### After deployment
-
-1. **Update server/server.js**:
-
-   ```javascript
-   if (host === "your-domain.com") {
-     return res.redirect(301, "https://www.your-domain.com" + req.originalUrl);
-   }
-   ```
-
-2. **Update CORS settings** for production domains
-3. **Configure Firebase authorized domains**
 
 ---
 
@@ -851,6 +849,12 @@ Use this checklist to ensure your DevLeads application is properly configured be
 - [ ] Firebase authorized domains updated
 - [ ] Database connection tested in production environment
 
+### Security Verification
+
+- [ ] `.env` file is in `.gitignore`
+- [ ] No sensitive data committed to version control
+- [ ] Production uses HTTPS
+
 ### Web Forms Integration Checklist
 
 - [ ] DevLeads application deployed and accessible
@@ -860,12 +864,6 @@ Use this checklist to ensure your DevLeads application is properly configured be
 - [ ] Web component custom element added to HTML of your website with correct endpoint URL
 - [ ] Test form submission creates leads in DevLeads
 - [ ] Email notifications working for form submissions
-
-### Security Verification
-
-- [ ] `.env` file is in `.gitignore`
-- [ ] No sensitive data committed to version control
-- [ ] Production uses HTTPS
 
 ### Post-Deployment
 
@@ -954,3 +952,5 @@ NODE_ENV=development
 ---
 
 Congratulations! Your DevLeads application should now be ready for use.
+
+Check out the [Features Guide](./FEATURES.md) to learn more about DevLeads.
