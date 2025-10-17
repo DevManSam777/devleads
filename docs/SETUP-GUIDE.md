@@ -85,6 +85,8 @@ Before you begin, ensure you have:
 
 5. **Create your first cluster** by clicking the **"Create"** button:
 
+      - If you already have a MongoDB ATLAS account, you can just create a new project after you sign in 
+
 ![Create cluster](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_Atlas_create_cluster_button.png)
 
 6. **Deploy your cluster** - Choose the **Free** tier:
@@ -118,15 +120,19 @@ Before you begin, ensure you have:
 
 ![Select Drivers](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_Atlas_drivers_connection.png)
 
+**⚠️ Important:** DO NOT ACTUALLY INSTALL DRIVERS.  WE JUST NEED THE CONNECTION STRING
+
+
 3. **Copy the connection string**:
    - **Driver**: Node.js
    - **Version**: 6.7 or later (should be selected by default)
 
 ![Connection String](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_Atlas_connection_string.png)
 
-4. **Copy and save the connection string** - you'll need this for your `.env` file
+4. **Copy and save the connection string**  you'll need this for your `.env` file
    - The connection string format will be: `mongodb+srv://username:password@cluster.mongodb.net/`
    - Save this complete connection string for later use in `.env`
+   - Click "Done" button
 
 ### Step 3: Configure Network Access
 
