@@ -204,7 +204,7 @@ Before you begin, ensure you have:
    - Copy the Firebase configuration public facing keys locally
      (you'll need this later for `dashboard/js/authApi.js`)
 
-   - ⚠️ Important: Do not run NPM install firebase in the console.  Firebase is already in the project's package.json file.
+   - ⚠️ Important: Do not run ```npm install firebase``` in the console.  Firebase is already in the project's package.json file.
 
    ```javascript
    // Your web app's Firebase configuration
