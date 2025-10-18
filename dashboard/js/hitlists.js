@@ -797,7 +797,7 @@ async function convertBusinessToLead(business) {
     await API.updateBusiness(business._id, businessUpdateData);
 
     Utils.showToast(
-      `Business "${business.businessName}" successfully converted to lead!`
+      `Business "${business.businessName}" Successfully converted to Dashboard lead!`
     );
 
     const hitlistId = business.hitlistId || currentHitlistId;
@@ -807,8 +807,8 @@ async function convertBusinessToLead(business) {
       }, 300);
     }
   } catch (error) {
-    console.error("Error converting business to lead:", error);
-    Utils.showToast(`Error converting business to lead: ${error.message}`);
+    console.error("Error converting business to Dashboard lead:", error);
+    Utils.showToast(`Error converting business to Dashboard lead: ${error.message}`);
   }
 }
 
@@ -1907,7 +1907,7 @@ function renderBusinesses(businesses) {
       </button>
       ${
         business.status !== "converted"
-          ? `<button class="btn-icon convert-to-lead" title="Convert to Lead">
+          ? `<button class="btn-icon convert-to-lead" title="Convert - Send lead to Dashboard">
           <i class="fas fa-user-plus"></i>
         </button>`
           : `<button class="btn-icon" disabled title="Already Converted" style="cursor: not-allowed; opacity: 0.5;">
