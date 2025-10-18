@@ -369,7 +369,7 @@ EMAIL_PASS="your-app-password"
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/DevManSam777/devleads.git
 cd devleads
 ```
 

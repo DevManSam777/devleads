@@ -266,7 +266,7 @@ async function sendLeadNotificationEmail(leadData) {
           <div style="margin-top: 25px; padding-left: 15px; border-left: 5px solid #9775fa; background-color: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
             <h3 style="margin: 0; font-size: 18px; color: #2c3e50 !important; text-decoration: none !important;">Next Steps</h3>
             <p style="margin: 10px 0 0; font-size: 14px; color: #2c3e50 !important;">
-              Please access your dashboard for more details and to manage this lead/project.
+              Please access your <a href="https://${process.env.DOMAIN}" style="color: #3498db !important; text-decoration: none !important; font-weight: 600;">dashboard</a> for more details and to manage this lead/project.
             </p>
           </div>
         </div>
