@@ -3,23 +3,23 @@ const nodemailer = require("nodemailer");
 // format date to US Eastern Time with timezone indicator
 function formatDateInEST() {
   const options = {
-    timeZone: 'America/New_York',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
   };
-  
+
   // create date in US Eastern Time
-  const estDate = new Date().toLocaleString('en-US', options);
-  
+  const estDate = new Date().toLocaleString("en-US", options);
+
   // add EST/EDT indicator with US label (checks if Daylight Saving Time is active)
   const isDST = isDaylightSavingTime();
-  const timeZoneLabel = isDST ? 'EDT-US' : 'EST-US';
-  
+  const timeZoneLabel = isDST ? "EDT-US" : "EST-US";
+
   return `${estDate} ${timeZoneLabel}`;
 }
 
@@ -28,7 +28,7 @@ function isDaylightSavingTime() {
   const today = new Date();
   const jan = new Date(today.getFullYear(), 0, 1);
   const jul = new Date(today.getFullYear(), 6, 1);
-  
+
   // DST is in effect if UTC offset in January is less than July
   return jan.getTimezoneOffset() > jul.getTimezoneOffset();
 }
@@ -58,7 +58,6 @@ function createEmailTransporter() {
     },
   });
 }
-
 
 // get formatted preferred contact method name and corresponding value
 function getPreferredContactDetails(leadData) {
@@ -96,7 +95,6 @@ function getPreferredContactDetails(leadData) {
 
   return { formattedMethod, contactValue };
 }
-
 
 // send email notification about a new lead submission
 async function sendLeadNotificationEmail(leadData) {
@@ -266,7 +264,9 @@ async function sendLeadNotificationEmail(leadData) {
           <div style="margin-top: 25px; padding-left: 15px; border-left: 5px solid #9775fa; background-color: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
             <h3 style="margin: 0; font-size: 18px; color: #2c3e50 !important; text-decoration: none !important;">Next Steps</h3>
             <p style="margin: 10px 0 0; font-size: 14px; color: #2c3e50 !important;">
-              Please access your <a href="https://${process.env.DOMAIN}" style="color: #3498db !important; text-decoration: none !important; font-weight: 600;">dashboard</a> for more details and to manage this lead/project.
+              Please access your <a href="https://${
+                process.env.DOMAIN
+              }" style="color: #3498db !important; text-decoration: none !important; font-weight: 600;">DevLeads Dashboard</a> for more details and to manage this lead/project.
             </p>
           </div>
         </div>
@@ -285,9 +285,8 @@ async function sendLeadNotificationEmail(leadData) {
   }
 }
 
-
 // send a confirmation email to the lead
- 
+
 async function sendLeadConfirmationEmail(leadData) {
   // validate required environment variables
   if (!process.env.EMAIL_USER) {
