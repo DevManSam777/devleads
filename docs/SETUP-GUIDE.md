@@ -105,7 +105,6 @@ Before you begin, ensure you have:
 
 - **Username**: Choose a username
 - **Password**: Use the auto-generated password or create your own
-- **⚠️ Important**: Copy and save this password - you'll need it for your connection string
 - Click **"Create Database User"**
 
 8. **Your cluster will be created** (this takes 1-3 minutes)
@@ -131,14 +130,17 @@ Before you begin, ensure you have:
 
 4. **Copy and save the connection string**  you'll need this for your `.env` file
    - The connection string format will be: `mongodb+srv://username:password@cluster.mongodb.net/`
-   - Save this complete connection string for later use in `.env`
+   - Save this complete connection string somewhere secure for later use in `.env`
    - Click "Done" button
 
 ### Step 3: Configure Network Access
 
-1. **Go to Network Access** in the left sidebar
+1. **Go to Database & Network Access** in the left sidebar
 
 ![Network Access tab](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_network_access1.png)
+
+2. **Click IP Access List**
+![Network Access tab](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_network_access2.png)
 
 2. **Add IP Address**:
 
@@ -179,21 +181,30 @@ Before you begin, ensure you have:
 
 ### Step 2: Get Web App Configuration
 
-1. **Project Settings** (Get Started By Adding Firebase to Your App) → **Web '</>'**
+1. **Add App**
 
-![Get started by adding firebase to your app](../dashboard/assets/devleads_setup_images/firebase/firebase_choose_web.png)
+   - Click "+ Add app"
 
-2. **Register app**:
+![Add app](../dashboard/assets/devleads_setup_images/firebase/firebase_add_app.png)
+
+2. **Choose Web**
+   - Click "< / > (Web)"
+
+![Choose web](../dashboard/assets/devleads_setup_images/firebase/firebase_choose_web.png)
+
+3. **Register app**:
 
    - Pick an App nickname: e.g. "DevLeads Web"
    - Don't check hosting checkbox
 
    ![Register app](../dashboard/assets/devleads_setup_images/firebase/firebase_register_app.png)
 
-3. **Copy the config object**
+4. **Copy the config object**
 
    - Copy the Firebase configuration public facing keys locally
-     (you'll need this later for `dashboard/js/authApi.js`):
+     (you'll need this later for `dashboard/js/authApi.js`)
+
+   - ⚠️ Important: Do not run NPM install firebase in the console.  Firebase is already in the project's package.json file.
 
    ```javascript
    // Your web app's Firebase configuration
@@ -209,16 +220,14 @@ Before you begin, ensure you have:
 
    ![Copy public keys](../dashboard/assets/devleads_setup_images/firebase/firebase_copy_pub_keys.png)
 
-4. **Continue to console**
+5. **Continue to console**
    - Click the 'Continue to console' button
 
 ### Step 3: Setup Authentication
 
-1. **Go to Authentication** → **Get Started**
+1. **Select 'Build'** → **Click 'Authentication'**
 
 ![Click Authentication](../dashboard/assets/devleads_setup_images/firebase/firebase_click_auth.png)
-
-![Get Started with Authentication](../dashboard/assets/devleads_setup_images/firebase/firebase_auth_get_started.png)
 
 2. **Sign-in method** tab → **Email/Password**:
    - Enable **Email/Password**
@@ -324,7 +333,8 @@ The `EMAIL_PASS` field is where you put your email account's authentication cred
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your-gmail@gmail.com
-EMAIL_PASS=your-16-character-app-password
+# EMAIL_PASS value should be wrapped in quotes
+EMAIL_PASS="your-16-character-app-password"
 ```
 
 **Outlook (for .env):**
@@ -333,7 +343,8 @@ EMAIL_PASS=your-16-character-app-password
 EMAIL_HOST=smtp-mail.outlook.com
 EMAIL_PORT=587
 EMAIL_USER=your-outlook@outlook.com
-EMAIL_PASS=your-app-password
+# EMAIL_PASS value should be wrapped in quotes
+EMAIL_PASS="your-app-password"
 ```
 
 ### Finding Your SMTP Settings
@@ -346,12 +357,7 @@ EMAIL_PASS=your-app-password
    - SMTP Server Address
    - Port Number (usually 587 or 465)
    - Whether SSL/TLS is required
-
-#### Common Providers' Documentation
-
-- **Gmail**: Google Workspace SMTP Settings
-- **Outlook/Office 365**: Microsoft SMTP Configuration
-- **Other Providers**: Check their support websites
+4. GMAIL and Outlook use port 587
 
 ---
 
@@ -367,41 +373,7 @@ git clone <your-repo-url>
 cd devleads
 ```
 
-### Step 2: Set Up Git Protection
-
-**Important:** Create a `.gitignore` file in your project root to protect sensitive data:
-
-1. **Create a new file** called `.gitignore` in the project root directory
-2. **Copy and paste** the following content into the file:
-
-```
-# Dependency directories
-node_modules/
-/server/node_modules/
-
-# Environment variables
-/.env
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Mac system files
-.DS_Store
-
-# Editor directories and files
-.idea/
-.vscode/
-*.swp
-*.swo
-```
-
-3. **Save the file**
-
-This prevents accidentally committing sensitive environment variables, dependencies, and system files to your repository.
-
-### Step 3: Install Dependencies
+### Step 2: Install Dependencies
 
 **In your terminal/command prompt**, run:
 
@@ -438,6 +410,7 @@ PORT=5000
 NODE_ENV=development
 
 # ===== FIREBASE ADMIN SDK =====
+# Only the private key value should be wrapped in quotes
 FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_PRIVATE_KEY_ID=your-private-key-id
 FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYour-Private-Key-Here\n-----END PRIVATE KEY-----\n"
@@ -453,6 +426,7 @@ FIREBASE_UNIVERSE_DOMAIN=googleapis.com
 ADMIN_EMAIL=your-admin-email@example.com
 EMAIL_FROM=your-sending-email@example.com
 EMAIL_USER=your-sending-email@example.com
+# EMAIL_PASS value should be wrapped in quotes
 EMAIL_PASS=your-app-specific-password
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
@@ -464,6 +438,7 @@ EMAIL_SECURE=false
 - ⚠️ Never commit the `.env` file to version control
 - **FIREBASE_PRIVATE_KEY**: Copy the entire private key value from the JSON file, including the quotation marks and everything between them (e.g., `"-----BEGIN PRIVATE KEY-----\nYour-Key-Here\n-----END PRIVATE KEY-----\n"`)
 - The `FIREBASE_PRIVATE_KEY` should include the `\n` characters for line breaks
+- The `EMAIL_PASS` value should be wrapped in quotation marks
 - Email settings are optional - the app works without them but it is highly recommended
 
 ---
@@ -632,6 +607,9 @@ git commit -m "Initial DevLeads setup with custom configuration
 - Added web forms integration (if applicable)
 - Ready for deployment"
 
+# Rename the default branch to "main"
+git branch -M main
+
 # Push to your repository
 git push -u origin main
 ```
@@ -650,9 +628,10 @@ git push -u origin main
 
 ### Recommended Platforms
 
-#### Render (Recommended)
+#### [Render](https://render.com) (Recommended)
 
-1. **Connect GitHub repository** to Render
+1. **Create a new web service**
+1. **Connect your GitHub repository** to Render
 2. **CRITICAL: Choose Docker Environment**
    - When creating the web service, select **"Docker"** as the environment
    - ⚠️ **Do NOT choose Node.js** - Business Finder requires Chrome (only available in Docker)
@@ -685,11 +664,13 @@ git push -u origin main
 
 **Important Render Considerations:**
 
-**RECOMMENDED: Upgrade to a paid plan for persistent storage and no sleep mode.**
+**RECOMMENDED: Upgrade to a paid 'Starter Plan' for persistent storage and no sleep mode.**
+- 512MB of RAM
+- 0.5 CPU
+- Email notifications require outbound SMTP which is **ONLY AVAILABLE** with on paid Render plans
 
 **Free Tier Limitations:**
-
-- Email notifications require outbound SMTP which is **ONLY AVAILABLE** with on paid Render plans
+- No SMTP access
 - Apps sleep after 15 minutes of inactivity (causes ~50 second cold start)
 - 750 hours/month of runtime total for ALL projects, not EACH
 - No persistent disk storage on free tier

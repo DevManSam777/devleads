@@ -110,7 +110,7 @@ DevLeads is a **self-hosted lead management system** specifically designed for f
 - **Consultants** - Professional client management
 - **Anyone** wanting to own their business data
 
-**Estimated Setup Time**: 1-2 hours for complete setup, from start to live, deployed web app.
+**Estimated Setup Time**: 30min - 1hr for complete setup, from start to live, deployed web app.
 
 ## Security Disclaimer
 
