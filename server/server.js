@@ -60,6 +60,7 @@ if (process.env.NODE_ENV === "production") {
 //   },
 //   credentials: true,
 // };
+// End Uncomment in production
 
 // Development CORS - comment out in production
 const corsOptions = {
@@ -68,6 +69,7 @@ const corsOptions = {
   },
   credentials: true,
 };
+// End comment out in production
 
 app.use(cors(corsOptions));
 // Handle preflight OPTIONS requests - DO NOT comment out for production
