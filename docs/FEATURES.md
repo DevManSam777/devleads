@@ -688,7 +688,7 @@ Thank you for choosing {{businessName}} for {{serviceDesired}}.
 The project includes npm scripts to populate your database with the form templates:
 
 **From server directory from command line:** 
-#### `npm run seed:force`
+#### 1. `npm run seed:force`
  
   - Forces the form seeding process to run, deleting all existing templates and populating the forms page with fresh starter templates from the `formSeeds.js` file.
 
@@ -696,10 +696,12 @@ The project includes npm scripts to populate your database with the form templat
 - You want to completely reset all templates
 - You've made changes to existing templates and want to replace them
 
-**Warning:** This will delete all existing form templates in your database.
+**Warning:** This will delete all existing form templates in your database, including any custom templates you may have created, and reseed with the starter templates from the `formSeeds.js` file.
 
-#### `npm run seed:reset`
-Inserts any starter template forms that are currently missing in the database (based on title), leaving existing forms untouched. Also resets the internal seeder status flag.
+![Reset form seeding](../dashboard/assets/devleads_features/npm_run_seed_force.png)
+
+#### 2. `npm run seed:reset`
+- Inserts any starter template forms that are currently missing in the database (based on title), leaving existing forms untouched. Also resets the internal seeder status flag.
 
 **Use this when:**
 - You've added new templates to `formSeeds.js` and want to add them without affecting existing ones
@@ -708,7 +710,7 @@ Inserts any starter template forms that are currently missing in the database (b
 
 **Safe option:** This preserves your existing custom templates.
 
-![Form seeding](../dashboard/assets/devleads_features/npm_run_seed.png)
+![Reset form seeding](../dashboard/assets/devleads_features/npm_run_seed.png)
 
 ---
 
