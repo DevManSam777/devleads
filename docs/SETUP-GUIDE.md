@@ -501,17 +501,17 @@ After setting up your email configuration, you'll need to customize the email te
 
 #### Required Customizations
 
-1. **Schedule Consultation Link** ([`emailNotification.js:444`](../server/utils/emailNotification.js#L444))
+1. **Schedule Consultation Link** ([`emailNotification.js:443`](../server/utils/emailNotification.js#L443))
 
    - Replace `href="#"` with your actual scheduling URL
    - Example: `href="https://cal.com/your-business/consultation"`
 
-2. **Support Email Address** ([`emailNotification.js:451`](../server/utils/emailNotification.js#L451))
+2. **Support Email Address** ([`emailNotification.js:450`](../server/utils/emailNotification.js#L450))
 
    - Replace `your-email@example.com` with your actual support email
    - This appears in the "Questions?" section of confirmation emails
 
-3. **Business Name** ([`emailNotification.js:456`](../server/utils/emailNotification.js#L456))
+3. **Business Name** ([`emailNotification.js:455`](../server/utils/emailNotification.js#L455))
    - Replace `Your Business Name` with your actual business name
    - This appears in the footer copyright section
 
