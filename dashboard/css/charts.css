@@ -87,7 +87,7 @@
     }
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 780px) {
     .charts-cards {
       grid-template-columns: 1fr;
       gap: 1.5rem;
