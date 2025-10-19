@@ -297,15 +297,15 @@ The lead information is organized into 7 sections for easy management:
 - **Document Actions**: View, edit, and delete forms (when editing)
 - **Create New**: "Create Form" button to make new documents
 - **Document Info**: When created, last changed, and document type
-- **Template Magic**: Generate professional documents using their information
+- **Template Magic**: Generate professional documents using client's information
 - **File Upload**: Upload signed contracts and other important documents
-- **File Organization**: Keep all their documents in one place
+- **File Organization**: Keep all client documents in one place
 
 ![Forms Tab](../dashboard/assets/devleads_features/dash_forms.png)
 
 ### 7. Notes & Messages
 **Communication tracking:**
-- **Customer Message**: Their original inquiry or message
+- **Customer Message**: Client's original inquiry or message
 - **Your Notes**: Private notes for your team
 - **Expanding Text**: Text areas grow as you type more
 - **Detailed Records**: Keep comprehensive communication history
@@ -336,7 +336,7 @@ The lead information is organized into 7 sections for easy management:
 - **Payment Integration**: Directly connected to your payment tracking
 - **Document Creation**: Generate professional documents using lead/client information with built-in markdown editor
 - **File Management**: Upload and organize PDF documents
-- **Google Maps**: Click to view their address on Google Maps
+- **Google Maps**: Click to view client's address on Google Maps
 - **Export Options**: Export individual lead information (bulk data can be exported from dashboard)
 
 #### Detailed Usage Instructions
@@ -372,9 +372,9 @@ The lead information is organized into 7 sections for easy management:
 **Managing Contact Information**:
 - Fill out complete address in "Address Information" tab
 - Google Maps button appears when you have a complete address
-- Set how they prefer to be contacted in "Service & Status" tab
+- Set how client prefers to be contacted in "Service & Status" tab
 - Set current lead status
-- Track when you last contacted them for follow-up planning 
+- Track when you last contacted client for follow-up planning 
 
 ### Payment Tracking
 
@@ -519,11 +519,30 @@ Create and manage custom form templates for contracts, proposals, invoices, and 
 
 ### Available Templates
 
-1. **Service Contract**: Professional service agreements
-2. **Web Development Proposal**: Detailed project proposals
-3. **Invoice Template**: Billing and payment documentation
-4. **Project Requirements**: Detailed project specifications
-5. **Statement of Work**: Scope and deliverables documentation
+DevLeads comes pre-loaded with these professional business document templates:
+
+**Contracts:**
+- Independent Developer Contract
+- California Contract Killer
+- Master Service Agreement Contract
+
+**Proposals:**
+- Web Development Proposal
+- Client Proposal
+
+**Invoices:**
+- Standard Invoice
+- Professional Invoice
+
+**Agreements:**
+- Website Maintenance Agreement
+
+**Other:**
+- Markdown & Variables Guide for Forms
+- Monthly Client Report
+- Cold Outreach Email
+- Cold Calling Script
+- DevLeads Features Documentation
 
 ### Template Structure
 
@@ -579,11 +598,11 @@ Based on the templates in the file, these variables are available:
 
 Templates are organized into five categories:
 
-- **contract** - Legal agreements and contracts
-- **proposal** - Project proposals and quotes
-- **invoice** - Billing and payment documents
-- **agreement** - Service agreements and terms
-- **other** - Reference materials, guides, and miscellaneous forms
+- **Contract** - Legal agreements and contracts
+- **Proposal** - Project proposals and quotes
+- **Invoice** - Billing and payment documents
+- **Agreement** - Service agreements and terms
+- **Other** - Reference materials, guides, and miscellaneous forms
 
 ### Draft vs Template System
 
@@ -717,7 +736,7 @@ The project includes npm scripts to populate your database with the form templat
 
 ## Hitlists Page
 
-Organize and manage prospect businesses for outreach campaigns.
+Organize and manage prospective businesses for outreach campaigns.
 
 ![Business hitlist page](../dashboard/assets/devleads_features/hitlist_page.png)
 
@@ -905,7 +924,7 @@ Choose between two web components to collect inquiries on your website and autom
 - **Real-time Validation**: Immediate feedback
 - **Customizable**: Customizable styling for light and dark themes
 - **Professional Design**: Clean, modern appearance
-- **Toast Notifications**:  Built in toast notifications for successful and unsuccessful form submissions
+- **Toast Notifications**:  Built-in toast notifications for successful and unsuccessful form submissions
 
 #### Form Fields
 - First Name (required)
@@ -942,7 +961,7 @@ See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration
 - **Theme Support**: Light/dark mode
 - **Customizable**: Customizable styling 
 - **Professional Layout**: Business-focused design
-- **Toast Notifications**:  Built in toast notifications for successful and unsuccessful form submissions
+- **Toast Notifications**:  Built-in toast notifications for successful and unsuccessful form submissions
 
 #### Form Fields
 - **Personal**: First name, last name, email, phone, extension
@@ -990,7 +1009,7 @@ Before using web forms, ensure:
 | **Fields** | 5 essential | 15+ comprehensive |
 | **Use Case** | Contact/Support | Project Inquiries |
 | **File Size** | Smaller | Larger |
-| **Customization** | Basic | Extensive |
+| **Customization** | Many options | Many options |
 | **Business Data** | No | Yes |
 | **Multi-step** | No | Yes |
 | **Billing Address** | No | Yes |
@@ -1104,11 +1123,9 @@ document.addEventListener('form-error', (event) => {
 #### Common Issues
 
 **Form Not Submitting**
-```bash
-# Check browser console for errors
-# Verify API endpoint URL
-# Confirm CORS settings
-```
+   - Check browser console for errors
+   - Verify API endpoint URL
+   - Confirm CORS settings
 
 **Leads Not Appearing**
 - Verify DevLeads API is accessible
