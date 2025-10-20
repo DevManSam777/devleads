@@ -1309,3 +1309,6 @@ Customize application behavior and user preferences.
 ---
 
 This feature guide covers general functionality in the DevLeads application. Each feature is designed to work together to provide a complete lead and project management solution for freelance developers and small businesses.
+
+---
+Click [HERE](https://buymeacoffee.com/devmansam) to buy the developer a coffee

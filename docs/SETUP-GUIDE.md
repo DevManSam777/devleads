@@ -969,3 +969,6 @@ If something isn't working:
 Congratulations! Your DevLeads application should now be ready for use.
 
 Check out the [Features Guide](./FEATURES.md) to learn more about DevLeads.
+
+---
+Click [HERE](https://buymeacoffee.com/devmansam) to buy the developer a coffee

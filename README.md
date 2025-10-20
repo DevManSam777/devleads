@@ -138,3 +138,7 @@ MIT License - See [LICENSE](./LICENSE) file for details
 ---
 
 **Ready to get started?** → **[Begin with the Setup Guide](docs/SETUP-GUIDE.md)**
+
+
+---
+Click [HERE](https://buymeacoffee.com/devmansam) to buy the developer a coffee
