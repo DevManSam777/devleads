@@ -944,6 +944,7 @@ If something isn't working:
 
 #### Email Not Working
 
+- Verify that you are using a paid Render tier or that hosting platform you are using supports SMTP
 - Verify SMTP settings
 - Verify web form is using correct API endpoint URL
 - Use app-specific passwords, not account passwords
@@ -956,15 +957,7 @@ If something isn't working:
 - Verify allowed origins include your domain
 - Test API endpoints with Postman
 
-### Debug Mode
-
-Enable detailed logging by setting:
-
-```env
-NODE_ENV=development
-```
-
-### Getting Help
+### Debugging
 
 1. Check browser console for errors
 2. Check server logs in terminal
