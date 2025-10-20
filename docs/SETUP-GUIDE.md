@@ -971,4 +971,5 @@ Congratulations! Your DevLeads application should now be ready for use.
 Check out the [Features Guide](./FEATURES.md) to learn more about DevLeads.
 
 ---
-Click [HERE](https://buymeacoffee.com/devmansam) to buy the developer a coffee
+
+**Show your support!** → **[Buy me a coffee](https://buymeacoffee.com/devmansam)**

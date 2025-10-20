@@ -141,4 +141,4 @@ MIT License - See [LICENSE](./LICENSE) file for details
 
 
 ---
-Click [HERE](https://buymeacoffee.com/devmansam) to buy the developer a coffee
+**Show your support!** → **[Buy me a coffee](https://buymeacoffee.com/devmansam)**
