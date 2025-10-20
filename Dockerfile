@@ -1,7 +1,7 @@
-# Use Node.js 18 slim image
+# use Node.js 18 slim image
 FROM node:18-slim
 
-# Install system dependencies and Chrome in one layer
+# install system dependencies and Chrome in one layer
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
@@ -30,20 +30,20 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# set working directory
 WORKDIR /app
 
-# Set Puppeteer environment variables before npm install
+# set Puppeteer environment variables before npm install
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
-# Copy application files first
+# copy application files first
 COPY . .
 
-# Install dependencies in the server subdirectory
+# install dependencies in the server subdirectory
 RUN cd server && npm install
 
-# Expose port
+# expose port
 EXPOSE 5000
 
 # Start the application from the server directory
