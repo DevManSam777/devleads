@@ -602,6 +602,8 @@ function openEditBusinessModal(business) {
   document.getElementById("businessCountry").value = address.country || "USA";
 
   document.getElementById("status").value = business.status || "not-contacted";
+  // store the original status to detect conversion
+  document.getElementById("status").dataset.originalStatus = business.status || "not-contacted";
   document.getElementById("priority").value = business.priority || "low";
   document.getElementById("notes").value = business.notes || "";
 
@@ -810,6 +812,63 @@ async function convertBusinessToLead(business) {
     console.error("Error converting business to Dashboard lead:", error);
     Utils.showToast(`Error converting business to Dashboard lead: ${error.message}`);
   }
+}
+
+// helper function to convert business to lead when status is changed to "converted"
+async function convertBusinessToLeadFromStatusChange(business) {
+  const nameParts = (business.contactName || "").split(" ");
+
+  // set current date to noon to avoid timezone issues
+  const currentDate = new Date();
+  currentDate.setHours(12, 0, 0, 0);
+
+  const lastContactedAt = currentDate;
+
+  const leadData = {
+    firstName: nameParts[0] || "???",
+    lastName: nameParts.slice(1).join(" ") || "???",
+    email: business.businessEmail || "example@email.com",
+    phone: business.businessPhone || "",
+    phoneExt: business.businessPhoneExt || "",
+    businessName: business.businessName,
+    businessPhone: business.businessPhone || "",
+    businessPhoneExt: business.businessPhoneExt || "",
+    businessEmail: business.businessEmail || "",
+    businessServices: business.typeOfBusiness || "",
+    websiteAddress: business.websiteUrl || "",
+    serviceDesired: "Web Development",
+    hasWebsite: business.websiteUrl ? "yes" : "no",
+    status: "contacted",
+    notes: business.notes || "",
+    lastContactedAt: lastContactedAt,
+    source: `Converted from Hitlist: ${
+      business.hitlistId || currentHitlistId
+    }`,
+    message: `Converted from business hitlist`,
+    billingAddress: business.address
+      ? {
+          street: business.address.street || "",
+          aptUnit: business.address.aptUnit || "",
+          city: business.address.city || "",
+          state: business.address.state || "",
+          zipCode: business.address.zipCode || "",
+          country: business.address.country || "",
+        }
+      : {},
+  };
+
+  if (!leadData.businessName) {
+    throw new Error("Business Name is required for conversion.");
+  }
+  if (leadData.email === "Not specified" && !leadData.phone) {
+    throw new Error("Either Email or Phone is required for conversion.");
+  }
+
+  await API.createLead(leadData);
+
+  Utils.showToast(
+    `Business "${business.businessName}" Successfully converted to Dashboard lead!`
+  );
 }
 
 function mapBusinessStatusToLeadStatus(businessStatus) {
@@ -1679,6 +1738,12 @@ async function handleBusinessSubmit(event) {
     let savedBusiness;
 
     if (businessId) {
+      // check if status changed to "converted"
+      const statusSelect = document.getElementById("status");
+      const originalStatus = statusSelect.dataset.originalStatus;
+      const newStatus = businessData.status;
+      const statusChangedToConverted = originalStatus !== "converted" && newStatus === "converted";
+
       savedBusiness = await API.updateBusiness(businessId, businessData);
       Utils.showToast("Business updated successfully");
 
@@ -1694,6 +1759,16 @@ async function handleBusinessSubmit(event) {
       );
       if (originalIndex !== -1) {
         originalBusinesses[originalIndex] = savedBusiness;
+      }
+
+      // if status was changed to "converted", automatically create dashboard lead
+      if (statusChangedToConverted) {
+        try {
+          await convertBusinessToLeadFromStatusChange(savedBusiness);
+        } catch (conversionError) {
+          console.error("Error converting business to lead:", conversionError);
+          Utils.showToast("Business updated, but conversion to dashboard lead failed");
+        }
       }
     } else {
       savedBusiness = await API.createBusiness(hitlistId, businessData);
