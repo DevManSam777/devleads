@@ -2,7 +2,7 @@
 
 A comprehensive lead and project management application built with Node.js, Express, MongoDB, and Firebase Authentication. Features a powerful dashboard for managing leads, forms, payments, business hitlists, developer resources, and document management with analytics and visualizations.  
 
-Includes automated email notifications, quick integration of embeddable contact form web components, and native Business Finder for automated lead generation.  
+Includes automated email notifications, quick integration of embeddable contact form web components, and native Business Finder for automated lead generation.  Designed with freelance web developers and small agencies in mind.
 
 Deployed via Docker for reliable, scalable production hosting.
 
