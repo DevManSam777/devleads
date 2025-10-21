@@ -395,7 +395,7 @@ EMAIL_PASS="your-app-password"
 git clone https://github.com/DevManSam777/devleads.git
 cd devleads
 ```
-   - **Tip:** You can now open this **Setup Guide** locally `docs/SETUP-GUIDE.md`
+   - **Tip:** You can now open this **Setup Guide** locally `docs/SETUP-GUIDE.md line 398` 
 
 
 ### Step 2: Install Dependencies
