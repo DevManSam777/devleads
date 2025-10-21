@@ -1312,4 +1312,4 @@ This feature guide covers general functionality in the DevLeads application. Eac
 
 ---
 
-**Show your support!** → **[Buy me a coffee](https://buymeacoffee.com/devmansam)**
+**Show your support!** → **[Buy me a coffee](https://buymeacoffee.com/devmansam)** ☕
