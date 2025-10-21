@@ -744,14 +744,14 @@ git push -u origin main
    After making these changes, commit and push to your repository to trigger a new deployment.
 2. **Save changes, stage, commit, and push to your Github repo**
 3. **Configure Firebase authorized domains**
-   - "Authentication" > "Settings" > "Authorized Domains"
+   - **"Authentication" > "Settings" > "Authorized Domains"**
    - Add your domain (e.g., `your-deployment-url.onrender.com`)
 4. **Configure MongoDB Atlas production IPs**
    - Go to your MongoDB Atlas cluster
-   - "Database & Network Access" > "IP Access List"
+   - **"Database & Network Access" > "IP Access List"**
    - Add the all of the IPs from Render to the IP Access List
-   - Remove "0.0.0.0/0"
-5. **Update DOMAIN environmental variable to your actual deployment URL ```DOMAIN=your-deployment-url.onrender.com``` URL and set ```NODE_ENV=production``` on on Render or other host**
+   - Remove `"0.0.0.0/0"`
+5. **Update `DOMAIN` environmental variable on Render or your deployment host (if different), to match your actual deployment URL ```DOMAIN=your-deployment-url.onrender.com``` and set your node environment environmental variable to "production" ```NODE_ENV=production```**
 
 ---
 
@@ -779,7 +779,7 @@ After your DevLeads application is deployed, you can add web forms to your websi
 ```
 
 **Repository**: https://github.com/DevManSam777/minimalist-contact-form  
-_See the README for customization options and styling guidance_
+_See the contact form's README for customization options and styling guidance_
 
 ### Option 2: Full Web Inquiry Form
 
@@ -798,7 +798,7 @@ _See the README for customization options and styling guidance_
 ```
 
 **Repository**: https://github.com/DevManSam777/web_inquiry_form  
-_See the README for customization options and styling guidance_
+_See the web inquiry form's README for customization options and styling guidance_
 
 ### Important Notes
 
