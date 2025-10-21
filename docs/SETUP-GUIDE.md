@@ -284,7 +284,7 @@ Before you begin, ensure you have:
    - `universe_domain`
 
 5. **Leave this tab open** 
-   - We will need to add the authorized URL once we deploy our app shortly.
+   - We will need to add the authorized URL once we deploy our app shortly
 
 
 ---
