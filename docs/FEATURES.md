@@ -971,10 +971,10 @@ See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration
 - **Preferences**: Contact method, communication preferences
 
 #### Setup Instructions
-See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional) for implementation details.
+   - See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional) for implementation details.
 
 #### Repository  
-**Source**: https://github.com/DevManSam777/web_inquiry_form
+   - **Source**: https://github.com/DevManSam777/web_inquiry_form
 
 ### Integration with DevLeads
 
@@ -1084,7 +1084,7 @@ Ensure your DevLeads application is:
 
 #### CORS Setup
 
-Update your DevLeads `server/server.js`:
+   - Update your DevLeads `server/server.js`:
 
 ```javascript
 const allowedOrigins = [
@@ -1096,7 +1096,7 @@ const allowedOrigins = [
 
 #### Custom Event Handling
 
-**Listen for form events:**
+   - **Listen for form events:**
 ```javascript
 // Track form submissions
 document.addEventListener('form-submit', (event) => {
@@ -1215,16 +1215,16 @@ Curated collection of developer tools, services, and resources organized by cate
 ### Resource Categories
 
 #### Business Resources
-Essential tools and services for running and managing your business operations, including scheduling software, proposal templates, project management platforms, e-signature solutions, payment processing, and productivity tools.
+   - Essential tools and services for running and managing your business operations, including scheduling software, proposal templates, project management platforms, e-signature solutions, payment processing, and productivity tools.
 
 #### Design Resources
-Creative tools and inspiration for visual design work, including graphic design platforms, color palette generators, interface design tools, icon libraries, typography resources, and UI/UX inspiration galleries.
+   - Creative tools and inspiration for visual design work, including graphic design platforms, color palette generators, interface design tools, icon libraries, typography resources, and UI/UX inspiration galleries.
 
 #### Development Resources
-Learning resources, documentation, and tools for software development, including learning, technical articles, template libraries, programming guides, reference documentation, and developer community platforms.
+- Learning resources, documentation, and tools for software development, including learning, technical articles, template libraries, programming guides, reference documentation, and developer community platforms.
 
 #### Tools & Utilities
-Technical infrastructure and utility services for developers, including task automation, cloud platforms, version control, databases, API testing tools, and hosting solutions.
+- Technical infrastructure and utility services for developers, including task automation, cloud platforms, version control, databases, API testing tools, and hosting solutions.
 
 ### Usage Guide
 
