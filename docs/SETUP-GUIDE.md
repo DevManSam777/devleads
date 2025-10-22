@@ -713,6 +713,37 @@ git push -u origin main
 #### Other Options
 
 - **Fly.io**: Simple and affordable VM deployment with GitHub integration
+  - Probably the most affordable option \* (w/ example configuration below)
+  - Easy to setup with CLI or GitHub integration
+  - SMTP functionality included
+
+
+  **Example fly.toml configuration:**
+  ```toml
+  #Example fly.io toml file
+  # 1 cpu and 1gb memory were sufficient in my testing
+
+  app = 'devleads-demo'
+  # Choose the region closest to your users
+  primary_region = 'sjc'
+
+  [build]
+
+  [http_service]
+    internal_port = 5000
+    force_https = true
+    auto_stop_machines = 'stop'
+    auto_start_machines = true
+    min_machines_running = 0
+    processes = ['app']
+
+  [[vm]]
+    memory = '1gb'
+    cpu_kind = 'shared'
+    cpus = 1
+    memory_mb = 1024
+  ```
+
 - **Heroku**: Use Heroku CLI or GitHub integration
 - **DigitalOcean**: App Platform or Droplets
 
