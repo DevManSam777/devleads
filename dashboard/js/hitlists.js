@@ -495,6 +495,21 @@ function closeBusinessListModal() {
 function attachBusinessActionListeners(businesses) {
   const businessesList = document.getElementById("businessesList");
 
+  // make entire business item clickable to open view modal
+  businessesList.querySelectorAll(".business-item").forEach((item) => {
+    item.addEventListener("click", function (e) {
+      // don't open modal if clicking on action buttons or links
+      if (e.target.closest(".business-actions") || e.target.closest("a")) {
+        return;
+      }
+      const businessId = this.dataset.id;
+      const business = businesses.find((b) => b._id === businessId);
+      if (business) {
+        openViewBusinessModal(business);
+      }
+    });
+  });
+
   businessesList.querySelectorAll(".view-business").forEach((button) => {
     button.addEventListener("click", function (e) {
       e.stopPropagation();
@@ -2001,6 +2016,45 @@ function renderBusinesses(businesses) {
   attachBusinessActionListeners(businesses);
 }
 
+function updateBusinessViewModalActions(business) {
+  // check if modal actions container exists
+  let actionsContainer = document.getElementById("businessViewModalActions");
+  if (!actionsContainer) {
+    return;
+  }
+
+  // clear existing buttons
+  actionsContainer.innerHTML = "";
+
+  // create Edit button
+  const editButton = document.createElement("button");
+  editButton.type = "button";
+  editButton.className = "btn btn-primary";
+  editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
+  editButton.addEventListener("click", function () {
+    // close the view modal
+    document.getElementById("businessViewModal").style.display = "none";
+    // open the edit modal
+    openEditBusinessModal(business);
+  });
+
+  // create Delete button
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.className = "btn btn-danger";
+  deleteButton.innerHTML = '<i class="fas fa-trash"></i> Delete';
+  deleteButton.addEventListener("click", function () {
+    // close the view modal first
+    document.getElementById("businessViewModal").style.display = "none";
+    // trigger delete action
+    deleteBusiness(business._id);
+  });
+
+  // add buttons to container
+  actionsContainer.appendChild(editButton);
+  actionsContainer.appendChild(deleteButton);
+}
+
 function openViewBusinessModal(business) {
   const dateFormat = window.dateFormat || "MM/DD/YYYY";
 
@@ -2141,6 +2195,9 @@ function openViewBusinessModal(business) {
   document.getElementById("viewNotes").textContent = business.notes || "N/A";
 
   document.getElementById("businessViewModal").style.display = "block";
+
+  // add modal action buttons (Edit, Delete)
+  updateBusinessViewModalActions(business);
 }
 
 function initializeDateInputs() {
