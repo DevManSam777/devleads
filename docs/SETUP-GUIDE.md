@@ -835,7 +835,7 @@ _See the web inquiry form's README for customization options and styling guidanc
 
 - Replace `https://your-devleads-api.com` with your actual DevLeads deployment URL
   - Don't forget to append API end point `/api/leads` to the end of your URL
-- Ensure CORS is configured in your DevLeads application for your website domain
+-  **IMPORTANT:** Ensure CORS is configured in your DevLeads application for your website domain. You need to add the domain where your the web component is hosted to the `allowedOrigins` array at [line 38](../server/server.js#L38)  & [line 39](../server/server.js#L39) of `server/server.js`
 - Forms will automatically create new leads in your DevLeads dashboard
 - Email notifications will be sent (if configured) for new form submissions
 
