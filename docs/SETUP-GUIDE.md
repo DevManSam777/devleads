@@ -390,7 +390,7 @@ EMAIL_PASS="your-app-password"
    - SMTP Server Address
    - Port Number (usually 587 or 465)
    - Whether SSL/TLS is required
-4. GMAIL and Outlook use port 587
+4. GMAIL, Outlook, and ZOHO Mail use port 587
 
 ---
 
