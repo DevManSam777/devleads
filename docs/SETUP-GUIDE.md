@@ -128,7 +128,7 @@ Before you begin, ensure you have:
 
 ![Connection String](../dashboard/assets/devleads_setup_images/mongodb/MongoDB_Atlas_connection_string.png)
 
-4. **Copy and save the connection string**  you'll need this for your `.env` file
+4. **Copy and save the connection string**  
    - The connection string format will be: `mongodb+srv://username:password@cluster.mongodb.net/`
    - Save this complete connection string somewhere secure for later use in `.env`
    - Click "Done" button
