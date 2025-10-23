@@ -550,7 +550,6 @@ After setting up your email configuration, you'll need to customize the email te
 
 - The current styles have been tested and are optimized for responsiveness
 - Email clients have limited CSS support
-- Inline styles are more reliable than external stylesheets
 - Test thoroughly across different email clients if you make style changes
 - Consider using email testing tools before deploying style modifications
 
@@ -683,10 +682,11 @@ git push -u origin main
    - **Create production environment variables**:
 
    ```env
+   # Change NODE_ENV to production
+
    NODE_ENV=production
-   DOMAIN=your-deployed-domain.com
+
    # Copy all other variables from your local .env file
-   # Update MongoDB URI for production if different
    ```
 
    - Copy all environment variables from your local `.env` file and add them to your project using the Render dashboard (Environment tab)
@@ -723,7 +723,7 @@ git push -u origin main
   #Example fly.io toml file
   # 1 cpu and 1gb memory were sufficient in my testing
 
-  app = 'devleads-demo'
+  app = 'devleads'
   # Choose the region closest to your users
   primary_region = 'sjc'
 
