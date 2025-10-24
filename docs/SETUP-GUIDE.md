@@ -743,6 +743,7 @@ git push -u origin main
     cpus = 1
     memory_mb = 1024
   ```
+  - If you host with fly.io
 
 - **Heroku**: Use Heroku CLI or GitHub integration
 - **DigitalOcean**: App Platform or Droplets
@@ -781,7 +782,7 @@ git push -u origin main
    - Go to your MongoDB Atlas cluster
    - **"Database & Network Access" > "IP Access List"**
    - Add the all of the IPs from Render to the IP Access List
-   - Remove `"0.0.0.0/0"`
+   - Remove `"0.0.0.0/0"` (If you host with fly.io do not remove this)
 5. **Update `DOMAIN` environmental variable on Render or your deployment host (if different), to match your actual deployment URL ```DOMAIN=your-deployment-url.onrender.com``` and set your node environment environmental variable to "production" ```NODE_ENV=production```**
 
 ---
