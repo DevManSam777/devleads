@@ -293,6 +293,61 @@ Before you begin, ensure you have:
 
 Email notifications are optional but highly recommended for lead management. It is set up to work seamlessly with the customizable [web form](#web-forms-integration-optional-but-highly-recommended) web components provided later on in this document. Both you and the person submitting the form are sent email confirmations.
 
+### Understanding the Three Email Variables
+
+DevLeads uses three separate email configuration variables. **In most cases (99% of the time), you'll use the same email address for all three**. However, having separate variables gives you flexibility for more advanced configurations if needed.
+
+#### `EMAIL_USER`
+**Purpose**: SMTP authentication username
+
+This is the account you use to log into your email server.
+
+- **Used for**: Authenticating with the SMTP server
+- **Example**: `your-email@gmail.com`
+
+#### `ADMIN_EMAIL`
+**Purpose**: Recipient address for notifications
+
+This is YOUR email address where you want to receive notifications when new leads submit forms.
+
+- **Used for**: Receiving new lead notifications
+- **Example**: `your-email@gmail.com`
+
+#### `EMAIL_FROM`
+**Purpose**: Sender address displayed to customers
+
+This is the "From" address that appears in emails your customers receive.
+
+- **Used for**: Branding outgoing confirmation emails
+- **Example**: `your-email@gmail.com` or `noreply@your-business.com`
+
+#### Most Common Setup (Recommended)
+
+For most users, all three variables will be the same:
+
+```env
+EMAIL_USER=your-email@gmail.com
+ADMIN_EMAIL=your-email@gmail.com
+EMAIL_FROM=your-email@gmail.com
+```
+
+#### Advanced Setup (Optional)
+
+If you want professional branding or need to separate concerns:
+
+```env
+EMAIL_USER=your-email@gmail.com          # Your Gmail for authentication
+ADMIN_EMAIL=your-email@gmail.com         # Where YOU receive lead notifications
+EMAIL_FROM=noreply@your-business.com     # What CUSTOMERS see as the sender
+```
+
+**Why separate variables?**
+- **Professional branding**: Customers see your business domain instead of personal email
+- **Clear communication**: Use `noreply@` to indicate automated emails
+- **Flexibility**: Receive notifications at one address while sending from another
+
+**Important Note**: Not all email providers allow sending from a different address than your authenticated account. Gmail requires you to verify alternate "From" addresses in settings. If unsure, just use the same email for all three variables.
+
 ### Understanding Email Password (EMAIL_PASS)
 
 #### What is EMAIL_PASS?
@@ -355,9 +410,12 @@ The `EMAIL_PASS` field is where you put your email account's authentication cred
 ```env
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
+ADMIN_EMAIL=your-gmail@gmail.com
+EMAIL_FROM=your-gmail@gmail.com
 EMAIL_USER=your-gmail@gmail.com
 # EMAIL_PASS value should be wrapped in quotes
 EMAIL_PASS="your-16-character-app-password"
+EMAIL_SECURE=false
 ```
 
 **Outlook (for .env):**
@@ -365,9 +423,12 @@ EMAIL_PASS="your-16-character-app-password"
 ```env
 EMAIL_HOST=smtp-mail.outlook.com
 EMAIL_PORT=587
+ADMIN_EMAIL=your-outlook@outlook.com
+EMAIL_FROM=your-outlook@outlook.com
 EMAIL_USER=your-outlook@outlook.com
 # EMAIL_PASS value should be wrapped in quotes
 EMAIL_PASS="your-app-password"
+EMAIL_SECURE=false
 ```
 
 **Zoho Mail (for .env):**
@@ -375,9 +436,12 @@ EMAIL_PASS="your-app-password"
 ```env
 EMAIL_HOST=smtp.zoho.com
 EMAIL_PORT=587
+ADMIN_EMAIL=your-email@zoho.com
+EMAIL_FROM=your-email@zoho.com
 EMAIL_USER=your-email@zoho.com
 # EMAIL_PASS value should be wrapped in quotes
 EMAIL_PASS="your-app-password"
+EMAIL_SECURE=false
 ```
 
 ### Finding Your SMTP Settings
