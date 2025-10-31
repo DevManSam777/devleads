@@ -124,8 +124,8 @@ DevLeads is a **self-hosted lead management system** specifically designed for f
 
 **We are not responsible for any data breaches, security incidents, or unauthorized access to your deployment.** Use at your own risk and implement appropriate security measures for your specific use case.
 
-## Live Demo  
-**Check out the live demo** → **[DevLeads Dashboard](https://devleads-demo.fly.dev)**
+## Live Demo
+**Check out the live demo** → **[Dashboard Demo](https://app.devleads.site)**
 
 
 ## License
