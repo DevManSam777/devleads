@@ -720,7 +720,7 @@ git push -u origin main
 
 ### Recommended Platforms
 
-#### [Render](https://render.com) (Recommended)
+#### [Render](https://render.com) (Easiest to setup)
 
 **Important Render Considerations:**
 
@@ -730,7 +730,7 @@ git push -u origin main
 - Email notifications require outbound SMTP which is **ONLY AVAILABLE** with on paid Render plans
 
 **Free Tier Limitations:**
-- No SMTP access
+- No SMTP access (Email notifications will not work on free tier)
 - Apps sleep after 15 minutes of inactivity (causes ~50 second cold start)
 - 750 hours/month of runtime total for ALL projects, not EACH
 - No persistent disk storage on free tier
@@ -776,8 +776,11 @@ git push -u origin main
 
 #### Other Options
 
-- **Fly.io**: Simple and affordable VM deployment with GitHub integration
+
+#### [Fly.io](https://fly.io) (My Personal Recommendation)
+Simple and affordable VM deployment with GitHub integration
   - Probably the most affordable option \* (w/ example configuration below)
+      * Personal projects are not billed if under $5 USD per month in usage _(as of 11/01/2025 subject to change)_
   - Easy to setup with CLI or GitHub integration
   - SMTP functionality included
 
