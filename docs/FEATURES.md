@@ -1044,7 +1044,7 @@ Ensure your DevLeads application is:
     <h1>Get In Touch</h1>
     <contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
     
-    <script src="https://raw.githack.com/DevManSam777/minimalist-contact-form/main/contact-form.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/minimalist-contact-form@main/contact-form.js" defer></script>
 </body>
 </html>
 ```
@@ -1060,7 +1060,7 @@ Ensure your DevLeads application is:
     <h1>Start Your Project</h1>
     <web-inquiry-form api-url="https://your-devleads-api.com/api/leads"></web-inquiry-form>
     
-    <script src="https://raw.githack.com/DevManSam777/web_inquiry_form/main/web-inquiry-form.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/web_inquiry_form@main/web-inquiry-form.js" defer></script>
 </body>
 </html>
 ```

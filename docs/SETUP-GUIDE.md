@@ -871,7 +871,7 @@ After your DevLeads application is deployed, you can add web forms to your websi
 
 ```html
 <script
-  src="https://raw.githack.com/DevManSam777/minimalist-contact-form/main/contact-form.js"
+  src="https://cdn.jsdelivr.net/gh/DevManSam777/minimalist-contact-form@main/contact-form.js"
   defer
 ></script>
 <contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
@@ -888,7 +888,7 @@ _See the contact form's README for customization options and styling guidance_
 
 ```html
 <script
-  src="https://raw.githack.com/DevManSam777/web_inquiry_form/main/web-inquiry-form.js"
+  src="https://cdn.jsdelivr.net/gh/DevManSam777/web_inquiry_form@main/web-inquiry-form.js"
   defer
 ></script>
 <web-inquiry-form
