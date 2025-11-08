@@ -20,9 +20,6 @@ const leadSchema = new mongoose.Schema({
   phoneExt: {
     type: String,
   },
-  textNumber: {
-    type: String,
-  },
   businessName: {
     type: String,
   },

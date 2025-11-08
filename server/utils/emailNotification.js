@@ -64,7 +64,6 @@ function getPreferredContactDetails(leadData) {
   const method = leadData.preferredContact;
   let formattedMethod = "";
   let contactValue = "";
-  let text = leadData.text && leadData.phone;
 
   switch (method) {
     case "email":
@@ -85,7 +84,7 @@ function getPreferredContactDetails(leadData) {
       break;
     case "text":
       formattedMethod = "Text";
-      contactValue = leadData.text || leadData.phone;
+      contactValue = leadData.phone;
       break;
     default:
       // capitalize first letter of method

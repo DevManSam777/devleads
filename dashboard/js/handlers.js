@@ -39,14 +39,14 @@ function setupFormValidation() {
     }
   });
 
-  const phoneFields = ["phone", "businessPhone", "textNumber"];
+  const phoneFields = ["phone", "businessPhone"];
   phoneFields.forEach((fieldId) => {
     const input = document.getElementById(fieldId);
     if (input) {
       input.addEventListener("blur", function () {
         // only validate optional phone fields if they have a value
         if (
-          (fieldId === "businessPhone" || fieldId === "textNumber") &&
+          fieldId === "businessPhone" &&
           !this.value
         ) {
           clearInputError(this, getErrorElement(this));
@@ -303,12 +303,6 @@ async function validateAndSaveLead(event) {
     isBusinessPhoneValid = validatePhone(businessPhoneInput);
   }
 
-  let isTextNumberValid = true;
-  const textNumberInput = document.getElementById("textNumber");
-  if (textNumberInput && textNumberInput.value) {
-    isTextNumberValid = validatePhone(textNumberInput);
-  }
-
   let isWebsiteValid = true;
   const hasWebsiteSelect = document.getElementById("hasWebsite");
   const websiteAddressInput = document.getElementById("websiteAddress");
@@ -341,7 +335,6 @@ async function validateAndSaveLead(event) {
     isLastNameValid &&
     isBusinessEmailValid &&
     isBusinessPhoneValid &&
-    isTextNumberValid &&
     isWebsiteValid &&
     isBudgetValid &&
     isTotalBudgetValid
@@ -370,7 +363,6 @@ async function saveLead() {
     email: document.getElementById("email").value,
     phone: document.getElementById("phone").value,
     phoneExt: document.getElementById("phoneExt").value || undefined,
-    textNumber: document.getElementById("textNumber").value || undefined,
     businessName:
       document.getElementById("businessName").value ||
       firstName.value + " " + lastName.value,
@@ -742,7 +734,6 @@ async function openLeadModal(leadId, allLeads) {
   document.getElementById("email").value = lead.email || "";
   document.getElementById("phone").value = lead.phone || "";
   document.getElementById("phoneExt").value = lead.phoneExt || "";
-  document.getElementById("textNumber").value = lead.textNumber || "";
   document.getElementById("businessPhone").value = lead.businessPhone || "";
   document.getElementById("businessPhoneExt").value =
     lead.businessPhoneExt || "";

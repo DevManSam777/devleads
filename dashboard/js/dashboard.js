@@ -204,8 +204,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         email: lead.email,
         phone: lead.phone,
         phoneExt: lead.phoneExt,
-        textNumber: lead.textNumber,
-        
+
         // Business Info (with address included in business section)
         businessName: lead.businessName,
         businessPhone: lead.businessPhone,
@@ -1319,8 +1318,6 @@ function getFilteredLeads() {
       const businessPhoneMatch =
         lead.businessPhone &&
         lead.businessPhone.toLowerCase().includes(searchTerm);
-      const textNumberMatch =
-        lead.textNumber && lead.textNumber.toLowerCase().includes(searchTerm);
       const messageMatch =
         lead.message && lead.message.toLowerCase().includes(searchTerm);
       const websiteMatch =
@@ -1336,7 +1333,6 @@ function getFilteredLeads() {
         businessMatch ||
         businessEmailMatch ||
         businessPhoneMatch ||
-        textNumberMatch ||
         messageMatch ||
         notesMatch ||
         websiteMatch
@@ -1783,7 +1779,6 @@ function exportAsCSV(data, filename) {
     "Email",
     "Phone",
     "Phone Extension",
-    "Text Number",
     "Business Name",
     "Business Phone",
     "Business Phone Extension", 
@@ -1823,7 +1818,6 @@ function exportAsCSV(data, filename) {
       lead.email || '',
       lead.phone || '',
       lead.phoneExt || '',
-      lead.textNumber || '',
       lead.businessName || '',
       lead.businessPhone || '',
       lead.businessPhoneExt || '',
@@ -1918,7 +1912,6 @@ function exportSingleLeadAsCSV(leadData) {
     "Email",
     "Phone",
     "Phone Extension",
-    "Text Number",
     "Business Name",
     "Business Phone",
     "Business Phone Extension", 
@@ -1958,7 +1951,6 @@ function exportSingleLeadAsCSV(leadData) {
     leadData.email || '',
     leadData.phone || '',
     leadData.phoneExt || '',
-    leadData.textNumber || '',
     leadData.businessName || '',
     leadData.businessPhone || '',
     leadData.businessPhoneExt || '',
