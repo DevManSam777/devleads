@@ -87,9 +87,13 @@ function getPreferredContactDetails(leadData) {
       contactValue = leadData.phone;
       break;
     default:
-      // capitalize first letter of method
-      formattedMethod = method.charAt(0).toUpperCase() + method.slice(1);
-      contactValue = "N/A";
+      // handle undefined/null or unknown method
+      if (method && typeof method === 'string') {
+        formattedMethod = method.charAt(0).toUpperCase() + method.slice(1);
+      } else {
+        formattedMethod = "Email";
+      }
+      contactValue = leadData.email || "N/A";
   }
 
   return { formattedMethod, contactValue };
