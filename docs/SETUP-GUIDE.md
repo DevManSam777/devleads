@@ -390,17 +390,6 @@ The `EMAIL_PASS` field is where you put your email account's authentication cred
   3. Generate an app-specific password
   4. Save password for .env
 
-- **Zoho Mail**:
-  1. Log into Zoho Mail at **https://mail.zoho.com**
-  2. Click your profile picture (top right)
-  3. Select "My Account" (opens in new window)
-  4. Click "Security" tab
-  5. Click "App Passwords"
-  6. Click "Generate New Password"
-  7. Enter a name (e.g., "DevLeads" or "Nodemailer")
-  8. Copy the generated password immediately (only shown once)
-  9. Save password for use in .env
-
 ### Email Provider Settings
 
 - These are examples  of how you will fill out your environmental variables later
@@ -431,19 +420,6 @@ EMAIL_PASS="your-app-password"
 EMAIL_SECURE=false
 ```
 
-**Zoho Mail (for .env):**
-
-```env
-EMAIL_HOST=smtp.zoho.com
-EMAIL_PORT=587
-ADMIN_EMAIL=your-email@zoho.com
-EMAIL_FROM=your-email@zoho.com
-EMAIL_USER=your-email@zoho.com
-# EMAIL_PASS value should be wrapped in quotes
-EMAIL_PASS="your-app-password"
-EMAIL_SECURE=false
-```
-
 ### Finding Your SMTP Settings
 
 #### How to Get Accurate SMTP Details
@@ -454,7 +430,7 @@ EMAIL_SECURE=false
    - SMTP Server Address
    - Port Number (usually 587 or 465)
    - Whether SSL/TLS is required
-4. GMAIL, Outlook, and ZOHO Mail use port 587
+4. Gmail and Outlook use port 587
 
 ---
 
