@@ -390,6 +390,17 @@ The `EMAIL_PASS` field is where you put your email account's authentication cred
   3. Generate an app-specific password
   4. Save password for .env
 
+- **Zoho Mail**:
+  1. Log into Zoho Mail at **https://mail.zoho.com**
+  2. Click your profile picture (top right)
+  3. Select "My Account" (opens in new window)
+  4. Click "Security" tab
+  5. Click "App Passwords"
+  6. Click "Generate New Password"
+  7. Enter a name (e.g., "DevLeads" or "Nodemailer")
+  8. Copy the generated password immediately (only shown once)
+  9. Save password for use in .env
+
 ### Email Provider Settings
 
 - These are examples  of how you will fill out your environmental variables later
@@ -402,8 +413,8 @@ EMAIL_PORT=587
 ADMIN_EMAIL=your-gmail@gmail.com
 EMAIL_FROM=your-gmail@gmail.com
 EMAIL_USER=your-gmail@gmail.com
-# EMAIL_PASS value should be wrapped in quotes
-EMAIL_PASS="your-16-character-app-password"
+# Remove spaces from app password and add without quotes
+EMAIL_PASS=your16characterapppassword
 EMAIL_SECURE=false
 ```
 
@@ -415,8 +426,21 @@ EMAIL_PORT=587
 ADMIN_EMAIL=your-outlook@outlook.com
 EMAIL_FROM=your-outlook@outlook.com
 EMAIL_USER=your-outlook@outlook.com
-# EMAIL_PASS value should be wrapped in quotes
-EMAIL_PASS="your-app-password"
+# Remove spaces from app password and add without quotes
+EMAIL_PASS=yourapppassword
+EMAIL_SECURE=false
+```
+
+**Zoho Mail (for .env):**
+
+```env
+EMAIL_HOST=smtp.zoho.com
+EMAIL_PORT=587
+ADMIN_EMAIL=your-email@zoho.com
+EMAIL_FROM=your-email@zoho.com
+EMAIL_USER=your-email@zoho.com
+# Remove spaces from app password and add without quotes
+EMAIL_PASS=yourapppassword
 EMAIL_SECURE=false
 ```
 
@@ -501,8 +525,8 @@ FIREBASE_UNIVERSE_DOMAIN=googleapis.com
 ADMIN_EMAIL=your-admin-email@example.com
 EMAIL_FROM=your-sending-email@example.com
 EMAIL_USER=your-sending-email@example.com
-# EMAIL_PASS value should be wrapped in quotes
-EMAIL_PASS=your-app-specific-password
+# Remove spaces from app password and add without quotes
+EMAIL_PASS=yourappspecificpassword
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_SECURE=false
@@ -513,7 +537,7 @@ EMAIL_SECURE=false
 - ⚠️ Never commit the `.env` file to version control
 - **FIREBASE_PRIVATE_KEY**: Copy the entire private key value from the JSON file, including the quotation marks and everything between them (e.g., `"-----BEGIN PRIVATE KEY-----\nYour-Key-Here\n-----END PRIVATE KEY-----\n"`)
 - The `FIREBASE_PRIVATE_KEY` should include the `\n` characters for line breaks
-- The `EMAIL_PASS` value should be wrapped in quotation marks
+- **EMAIL_PASS**: Remove any spaces from your app password and add it without quotes
 - Email settings are optional - the app works without them but it is highly recommended
 
 ---
@@ -694,9 +718,11 @@ git push -u origin main
 
 ## Production Deployment
 
-### Recommended Platforms
+### Deployment Platform
 
-#### [Render](https://render.com) (Easiest to setup)
+#### [Render](https://render.com)
+
+This application has been tested and confirmed working on Render. If you prefer to use a different hosting platform, you're welcome to deploy elsewhere, but you'll need to configure it according to that platform's requirements.
 
 **Important Render Considerations:**
 
@@ -711,6 +737,7 @@ git push -u origin main
 - 750 hours/month of runtime total for ALL projects, not EACH
 - No persistent disk storage on free tier
 
+**Deployment Steps:**
 
 1. **Deploy a new web service**
 2. **Connect your GitHub repository** to Render
@@ -734,7 +761,7 @@ git push -u origin main
    - **⚠️ IMPORTANT**: For security, the API documentation endpoint (`/api`) is only accessible in development mode. Setting `NODE_ENV=production` in your environmental variables for your deployed version will automatically disable API documentation access in your production deployment.  Leave the local .env `NODE_ENV` variable value as `development`.
 
 5. **Configure auto-deploy** on commits
-   - Click **"Advanced" > "Auto-deploy" > "On commit"** 
+   - Click **"Advanced" > "Auto-deploy" > "On commit"**
 6. **Deploy**:
    - Click **"Deploy Web Service"**
    - Render builds your Docker image automatically
@@ -747,49 +774,8 @@ git push -u origin main
      - Example: `DOMAIN=yourdomain.com` (for custom domains)
 
 8. **Get production IPs from Render**
-   - **"Events" > "Connect"** dropdown 
+   - **"Events" > "Connect"** dropdown
       - Copy all and save for configuring MongoDB Atlas IP Access List
-
-#### Other Options
-
-
-#### [Fly.io](https://fly.io) (My Personal Recommendation)
-Simple and affordable VM deployment with GitHub integration
-  - Probably the most affordable option \* (w/ example configuration below)
-      * Personal projects are not billed if under $5 USD per month in usage _(as of 11/01/2025 subject to change)_
-  - Easy to setup with CLI or GitHub integration
-  - SMTP functionality included
-
-
-  **Example fly.toml configuration:**
-  ```toml
-  #Example fly.io toml file
-  # 1 cpu and 1gb memory were sufficient in my testing
-
-  app = 'devleads'
-  # Choose the region closest to your users
-  primary_region = 'sjc'
-
-  [build]
-
-  [http_service]
-    internal_port = 5000
-    force_https = true
-    auto_stop_machines = 'stop'
-    auto_start_machines = true
-    min_machines_running = 0
-    processes = ['app']
-
-  [[vm]]
-    memory = '1gb'
-    cpu_kind = 'shared'
-    cpus = 1
-    memory_mb = 1024
-  ```
-  - If you host with fly.io
-
-- **Heroku**: Use Heroku CLI or GitHub integration
-- **DigitalOcean**: App Platform or Droplets
 
 ---
 
@@ -824,8 +810,8 @@ Simple and affordable VM deployment with GitHub integration
 4. **Configure MongoDB Atlas production IPs**
    - Go to your MongoDB Atlas cluster
    - **"Database & Network Access" > "IP Access List"**
-   - Add the all of the IPs from Render to the IP Access List
-   - Remove `"0.0.0.0/0"` (If you host with fly.io do not remove this)
+   - Add all of the IPs from Render to the IP Access List
+   - Remove `"0.0.0.0/0"` from your IP Access List for security
 5. **Update `DOMAIN` environmental variable on Render or your deployment host (if different), to match your actual deployment URL ```DOMAIN=your-deployment-url.onrender.com``` and set your node environment environmental variable to "production" ```NODE_ENV=production```**
 
 ---
