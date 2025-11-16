@@ -30,45 +30,45 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // PRODUCTION CORS configuration - uncomment for production use
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     const allowedOrigins = [
-//       `https://${process.env.DOMAIN}`,
-//       `https://www.${process.env.DOMAIN}`,
-//        https://where-your-form-is-deployed.com
-//        https://www.where-your-form-is-deployed.com
-//       "http://localhost:3000",
-//       "http://localhost:5000",
-//       "http://localhost:5173",
-//       "http://localhost:5500",
-//       "http://localhost:8080",
-//       "http://127.0.0.1:5000",
-//       "http://127.0.0.1:3000",
-//       "http://127.0.0.1:5173",
-//       "http://127.0.0.1:5500",
-//       "http://127.0.0.1:8080"
-//     ];
-//
-//     if (!origin) return callback(null, true);
-//
-//     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-//       callback(null, true);
-//     } else {
-//       console.log("CORS blocked origin:", origin);
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   credentials: true,
-// };
-// End Uncomment in production
-
-// Development CORS - comment out in production
 const corsOptions = {
   origin: function (origin, callback) {
-    callback(null, true);
+    const allowedOrigins = [
+      `https://${process.env.DOMAIN}`,
+      `https://www.${process.env.DOMAIN}`,
+      "https://devmansam.net",
+      "https://www.devmansam.net",
+      "http://localhost:3000",
+      "http://localhost:5000",
+      "http://localhost:5173",
+      "http://localhost:5500",
+      "http://localhost:8080",
+      "http://127.0.0.1:5000",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:5500",
+      "http://127.0.0.1:8080"
+    ];
+
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      console.log("CORS blocked origin:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
   },
   credentials: true,
 };
+// End Uncomment in production
+
+// Development CORS - comment out in production
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     callback(null, true);
+//   },
+//   credentials: true,
+// };
 // End comment out in production
 
 app.use(cors(corsOptions));
@@ -806,7 +806,7 @@ async function startServer() {
 
     // start the Express server
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(
         `Freelance Lead Management API is now running on port ${PORT}`
       );

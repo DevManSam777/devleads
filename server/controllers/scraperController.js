@@ -157,17 +157,72 @@ async function scrapeInBackground(jobId, searchTerm, location, hitlistId, maxRes
     
   } catch (error) {
     console.error('Scraping job failed:', error);
-    
-    jobStatus.status = 'error';
-    jobStatus.error = error.message;
-    jobStatus.message = `Scraping failed: ${error.message}`;
-    jobStatus.endTime = new Date();
-    
-    // Clean up job after 1 minute on error
-    setTimeout(() => {
-      activeJobs.delete(jobId);
-    }, 60 * 1000);
-    
+
+    // Try to save any partial results that were scraped before the error
+    let partialResults = [];
+    if (scraper && scraper.results && scraper.results.length > 0) {
+      partialResults = scraper.results;
+      console.log(`Found ${partialResults.length} partial results before error occurred`);
+    }
+
+    if (partialResults.length > 0) {
+      try {
+        jobStatus.status = 'saving';
+        jobStatus.message = 'Saving partial results to database...';
+        jobStatus.results = partialResults;
+        jobStatus.totalToSave = partialResults.length;
+        jobStatus.savedProgress = 0;
+
+        // Save partial businesses to database
+        const savedBusinesses = await saveBusiness(partialResults, hitlistId, (savedCount, total) => {
+          jobStatus.savedProgress = savedCount;
+          jobStatus.message = `Saving partial results... (${savedCount}/${total})`;
+        });
+
+        // Update hitlist with partial results
+        const businessIds = savedBusinesses.map(business => business._id);
+        await Hitlist.findByIdAndUpdate(hitlistId, {
+          lastModified: new Date(),
+          $addToSet: { businesses: { $each: businessIds } }
+        });
+
+        jobStatus.status = 'completed_with_errors';
+        jobStatus.message = `Successfully saved ${savedBusinesses.length} partial results despite error: ${error.message}`;
+        jobStatus.savedCount = savedBusinesses.length;
+        jobStatus.partialResults = true;
+        jobStatus.originalError = error.message;
+        jobStatus.endTime = new Date();
+
+        console.log(`Successfully saved ${savedBusinesses.length} partial results despite error: ${error.message}`);
+
+        // Clean up job after 5 minutes
+        setTimeout(() => {
+          activeJobs.delete(jobId);
+        }, 5 * 60 * 1000);
+
+      } catch (saveError) {
+        console.error('Failed to save partial results:', saveError);
+        jobStatus.status = 'error';
+        jobStatus.error = error.message;
+        jobStatus.message = `Scraping failed: ${error.message}. Also failed to save ${partialResults.length} partial results.`;
+        jobStatus.endTime = new Date();
+
+        setTimeout(() => {
+          activeJobs.delete(jobId);
+        }, 60 * 1000);
+      }
+    } else {
+      jobStatus.status = 'error';
+      jobStatus.error = error.message;
+      jobStatus.message = `Scraping failed: ${error.message}`;
+      jobStatus.endTime = new Date();
+
+      // Clean up job after 1 minute on error
+      setTimeout(() => {
+        activeJobs.delete(jobId);
+      }, 60 * 1000);
+    }
+
   } finally {
     if (scraper) {
       await scraper.close();

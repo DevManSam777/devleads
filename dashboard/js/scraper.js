@@ -172,6 +172,21 @@ class BusinessScraper {
             window.fetchAndRenderHitlists();
           }, 500);
         }
+      } else if (response.status === 'completed_with_errors') {
+        this.showCompletion(`⚠️ Partial results: Added ${response.savedCount || response.progress} businesses before error occurred.\n\nError: ${response.originalError}`);
+
+        // show warning toast for partial results
+        if (!this.completionToastShown && !this.userViewedCompletion) {
+          showToast(`Partial results saved (${response.savedCount} businesses)`, 'warning');
+          this.completionToastShown = true;
+        }
+
+        // refresh the main hitlists view
+        if (typeof window.fetchAndRenderHitlists === 'function') {
+          setTimeout(() => {
+            window.fetchAndRenderHitlists();
+          }, 500);
+        }
       } else if (response.status === 'error') {
         showToast(`Search failed: ${response.error}`, 'error');
         this.resetForm();
@@ -520,7 +535,22 @@ class BusinessScraper {
           // fallback: reload the page to show updated data
           setTimeout(() => window.location.reload(), 1000);
         }
-        
+
+      } else if (response.status === 'completed_with_errors') {
+        this.stopPolling();
+        this.showCompletion(`⚠️ Partial results: Added ${response.savedCount || response.progress} businesses before error occurred.\n\nError: ${response.originalError}`);
+
+        // refresh the main hitlists view to show partial results
+        if (typeof window.fetchAndRenderHitlists === 'function') {
+          setTimeout(() => {
+            window.fetchAndRenderHitlists();
+          }, 500);
+        } else if (this.targetHitlistId && typeof window.refreshHitlistAfterImport === 'function') {
+          window.refreshHitlistAfterImport(this.targetHitlistId);
+        } else {
+          setTimeout(() => window.location.reload(), 1000);
+        }
+
       } else if (response.status === 'error') {
         this.stopPolling();
         showToast(`Search failed: ${response.error}`, 'error');
@@ -557,6 +587,17 @@ class BusinessScraper {
         if (response.status === 'completed') {
           this.showCompletion(`Search completed! Found ${response.savedCount || response.progress} businesses.`);
           showToast('Search completed successfully!', 'success');
+
+          // refresh the hitlists view
+          if (typeof window.fetchAndRenderHitlists === 'function') {
+            setTimeout(() => {
+              window.fetchAndRenderHitlists();
+            }, 500);
+          }
+          return;
+        } else if (response.status === 'completed_with_errors') {
+          this.showCompletion(`⚠️ Partial results: Added ${response.savedCount || response.progress} businesses before error occurred.\n\nError: ${response.originalError}`);
+          showToast(`Partial results saved (${response.savedCount} businesses)`, 'warning');
 
           // refresh the hitlists view
           if (typeof window.fetchAndRenderHitlists === 'function') {
