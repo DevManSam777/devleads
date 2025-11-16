@@ -1,0 +1,18 @@
+# Dependencies - let Docker install these fresh
+node_modules
+npm-debug.log
+
+# Environment files - use platform env vars
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store

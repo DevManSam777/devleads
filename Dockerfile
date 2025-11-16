@@ -33,18 +33,21 @@ RUN apt-get update && apt-get install -y \
 # set working directory
 WORKDIR /app
 
-# set Puppeteer environment variables before npm install
+# set Puppeteer environment variables
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
-# copy application files first
-COPY . .
+# copy package files first for better layer caching
+COPY server/package.json server/package-lock.json ./server/
 
-# install dependencies in the server subdirectory
-RUN cd server && npm install
+# install dependencies with optimizations for reliability
+RUN cd server && npm ci --only=production --no-audit --prefer-offline
+
+# copy application files
+COPY . .
 
 # expose port
 EXPOSE 5000
 
-# Start the application from the server directory
+# start application
 CMD ["node", "server/server.js"]
