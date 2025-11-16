@@ -1,5 +1,5 @@
 # use Node.js 18 slim image
-FROM node:18-slim
+FROM node:20-slim
 
 # install system dependencies and Chrome in one layer
 RUN apt-get update && apt-get install -y \
