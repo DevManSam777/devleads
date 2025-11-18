@@ -1,4 +1,4 @@
-# use Node.js 18 slim image
+# use Node.js 20 slim image
 FROM node:20-slim
 
 # install system dependencies and Chrome in one layer
