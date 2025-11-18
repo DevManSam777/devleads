@@ -469,6 +469,9 @@ EMAIL_SECURE=false
 git clone https://github.com/DevManSam777/devleads.git
 cd devleads
 ```
+
+   - Alternatively, you can press the "Use Template" button at [https://github.com/DevManSam777/devleads](https://github.com/DevManSam777/devleads)
+      - this will give you a fresh copy without the git history
    - **Tip:** You can now open this **Setup Guide** locally `docs/SETUP-GUIDE.md line 398` 
 
 
