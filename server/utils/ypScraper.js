@@ -467,8 +467,23 @@ class YellowPagesScraper {
     const unique = [];
 
     businesses.forEach(business => {
-      const key = `${business.businessName}-${business.businessPhone}`.toLowerCase();
-      if (!seen.has(key)) {
+      // Primary key: name + phone (most reliable)
+      let key = null;
+      if (business.businessPhone) {
+        key = `${business.businessName}-${business.businessPhone}`.toLowerCase();
+      }
+
+      // Fallback key: name + street + city + state (when phone missing)
+      if (!key && business.address?.streetAddress && business.address?.city && business.address?.state) {
+        key = `${business.businessName}-${business.address.streetAddress}-${business.address.city}-${business.address.state}`.toLowerCase();
+      }
+
+      // Last resort: name + city + state (for entries with minimal address info)
+      if (!key && business.address?.city && business.address?.state) {
+        key = `${business.businessName}-${business.address.city}-${business.address.state}`.toLowerCase();
+      }
+
+      if (key && !seen.has(key)) {
         seen.set(key, true);
         unique.push(business);
       }

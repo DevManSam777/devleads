@@ -237,25 +237,28 @@ async function saveBusiness(businesses, hitlistId, progressCallback = null) {
   let processedCount = 0;
   
   // Get all existing businesses in this hitlist once to avoid repeated queries
-  const existingBusinesses = await Business.find({ 
-    hitlistId: hitlistId 
+  const existingBusinesses = await Business.find({
+    hitlistId: hitlistId
   }, {
     businessName: 1,
     businessPhone: 1,
+    'address.street': 1,
     'address.city': 1,
     'address.state': 1
   }).lean();
   
   // Create lookup sets for fast duplicate checking
   const phoneNameSet = new Set();
-  const cityNameSet = new Set();
-  
+  const addressSet = new Set();
+
   existingBusinesses.forEach(biz => {
     if (biz.businessPhone) {
       phoneNameSet.add(`${biz.businessName}-${biz.businessPhone}`.toLowerCase());
     }
-    if (biz.address?.city && biz.address?.state) {
-      cityNameSet.add(`${biz.businessName}-${biz.address.city}-${biz.address.state}`.toLowerCase());
+    if (biz.address?.street && biz.address?.city && biz.address?.state) {
+      addressSet.add(`${biz.businessName}-${biz.address.street}-${biz.address.city}-${biz.address.state}`.toLowerCase());
+    } else if (biz.address?.city && biz.address?.state) {
+      addressSet.add(`${biz.businessName}-${biz.address.city}-${biz.address.state}`.toLowerCase());
     }
   });
   
@@ -268,13 +271,18 @@ async function saveBusiness(businesses, hitlistId, progressCallback = null) {
     for (const businessData of batch) {
       try {
         // Fast duplicate check using sets
-        const phoneKey = businessData.businessPhone ? 
+        const phoneKey = businessData.businessPhone ?
           `${businessData.businessName}-${businessData.businessPhone}`.toLowerCase() : null;
-        const cityKey = businessData.address?.city && businessData.address?.state ?
-          `${businessData.businessName}-${businessData.address.city}-${businessData.address.state}`.toLowerCase() : null;
-        
-        const isDuplicate = (phoneKey && phoneNameSet.has(phoneKey)) || 
-                           (cityKey && cityNameSet.has(cityKey));
+
+        let addressKey = null;
+        if (businessData.address?.street && businessData.address?.city && businessData.address?.state) {
+          addressKey = `${businessData.businessName}-${businessData.address.street}-${businessData.address.city}-${businessData.address.state}`.toLowerCase();
+        } else if (businessData.address?.city && businessData.address?.state) {
+          addressKey = `${businessData.businessName}-${businessData.address.city}-${businessData.address.state}`.toLowerCase();
+        }
+
+        const isDuplicate = (phoneKey && phoneNameSet.has(phoneKey)) ||
+                           (addressKey && addressSet.has(addressKey));
         
         if (isDuplicate) {
           console.log(`Skipping duplicate business: ${businessData.businessName}`);
@@ -287,7 +295,7 @@ async function saveBusiness(businesses, hitlistId, progressCallback = null) {
         
         // Add to duplicate check sets
         if (phoneKey) phoneNameSet.add(phoneKey);
-        if (cityKey) cityNameSet.add(cityKey);
+        if (addressKey) addressSet.add(addressKey);
         
         // Create business document
         const business = new Business({
