@@ -38,7 +38,7 @@ class YellowPagesScraper {
         ]
       };
 
-      // Use system Chrome in Docker or local Chrome on macOS
+      // use system Chrome in Docker or local Chrome on macOS
       if (process.env.PUPPETEER_EXECUTABLE_PATH) {
         launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
       } else if (process.platform === 'darwin') {
@@ -81,14 +81,14 @@ class YellowPagesScraper {
           this.results = this.results.concat(pageResults);
           currentPage++;
           
-          // Random delay between pages (like YP-Scraper)
+          // random delay between pages (like YP-Scraper)
           if (hasMorePages && this.results.length < this.options.resultsLimit) {
             const pageDelay = 2500 + Math.random() * 2500; // 2.5-5 seconds
             await this.delay(pageDelay);
           }
         }
 
-        // Safety check to prevent infinite loops
+        // safety check to prevent infinite loops
         if (currentPage > 100) {
           break;
         }
@@ -116,7 +116,7 @@ class YellowPagesScraper {
           throw error;
         }
         
-        // Exponential backoff with randomization
+        // exponential backoff with randomization
         const baseDelay = 5000 * attempt;
         const randomDelay = baseDelay + Math.random() * baseDelay;
         await this.delay(randomDelay);
@@ -130,11 +130,11 @@ class YellowPagesScraper {
     
     console.log(`Scraping URL: ${url}`);
     
-    // Create a new page for this request
+    // create a new page for this request
     const page = await this.browser.newPage();
     
     try {
-      // Set headers for this page
+      // set headers for this page
       await page.setExtraHTTPHeaders({
         "Accept-Language": "en-US,en;q=0.9",
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -170,11 +170,23 @@ class YellowPagesScraper {
         throw new Error("Blocked by Cloudflare or similar protection");
       }
 
-      // Random delay instead of fixed
+      // check for "No results found" message
+      const noResultsFound = await page.evaluate(() => {
+        const heading = Array.from(document.querySelectorAll('h1')).find(el => 
+          el.textContent.includes('No results found')
+        );
+        return !!heading;
+      });
+
+      if (noResultsFound) {
+        return [];
+      }
+
+      // random delay instead of fixed
       const randomDelay = 2000 + Math.random() * 3000; // 2-5 seconds
       await this.delay(randomDelay);
 
-      // Try multiple selectors for business results
+      // try multiple selectors for business results
       const possibleSelectors = [
         '.result',
         '.search-results .result',
@@ -198,14 +210,14 @@ class YellowPagesScraper {
             break;
           }
         } catch (error) {
-          // Try next selector
+          // try next selector
         }
       }
 
       if (businessElements.length === 0) {
         console.log('No business elements found, trying to debug page content');
         
-        // Log page title and some content for debugging
+        // log page title and some content for debugging
         const pageInfo = await page.evaluate(() => {
           return {
             title: document.title,
@@ -225,7 +237,7 @@ class YellowPagesScraper {
       }
 
       const businesses = await page.evaluate((selector) => {
-      // Enhanced parseAddress function with apartment/unit extraction
+      // parseAddress function with apartment/unit extraction
       const parseAddress = (addressText) => {
         if (!addressText)
           return { streetAddress: "", city: "", state: "", zipCode: "", aptUnit: "" };
@@ -256,7 +268,7 @@ class YellowPagesScraper {
           let fullStreetAddress = cityMatch[1].trim().replace(/,$/, '').trim();
           city = cityMatch[2].trim();
           
-          // Pattern for common unit types at the end
+          // pattern for common unit types at the end
           const unitPattern = /^(.*?)\s+(apt|apartment|unit|ste|suite|fl|floor|rm|room|#)\s*([A-Za-z0-9\-]+)$/i;
           const unitMatch = fullStreetAddress.match(unitPattern);
           
@@ -282,7 +294,7 @@ class YellowPagesScraper {
         try {
           const business = {};
 
-          // Try multiple selectors for business name
+          // try multiple selectors for business name
           const nameSelectors = [
             '.business-name a',
             '.business-name',
@@ -300,7 +312,7 @@ class YellowPagesScraper {
           }
           business.name = nameElement ? nameElement.textContent.trim() : '';
 
-          // Try multiple selectors for phone number
+          // try multiple selectors for phone number
           const phoneSelectors = [
             '.phones .phone',
             '.phone',
@@ -315,7 +327,7 @@ class YellowPagesScraper {
           }
           business.phone = phoneElement ? phoneElement.textContent.trim() : '';
 
-          // Extract address components exactly like the original YP-Scraper
+          // extract address components exactly like the original YP-Scraper
           const streetEl = element.querySelector('.street-address, .adr, .address');
           const localityEl = element.querySelector('.locality, .city');
 
@@ -326,10 +338,10 @@ class YellowPagesScraper {
             ? `${street}, ${locality}`
             : street || locality;
           
-          // Parse address using the same logic as the original YP-Scraper  
+          // parse address using the same logic as the original YP-Scraper  
           business.address = parseAddress(business.fullAddress);
 
-          // Extract business categories/type
+          // extract business categories/type
           const categories = [];
           const categorySelectors = [
             '.categories a', 
@@ -350,7 +362,7 @@ class YellowPagesScraper {
           
           business.businessType = categories.join(', ');
 
-          // Try multiple selectors for website
+          // try multiple selectors for website
           const websiteSelectors = [
             '.track-visit-website',
             'a[href*="http"]',
@@ -367,12 +379,12 @@ class YellowPagesScraper {
           }
           business.website = websiteElement ? websiteElement.href : '';
 
-          // Debug log the first few businesses found
+          // debug log the first few businesses found
           if (results.length < 3) {
             console.log('Found business:', business);
           }
 
-          // Only add if we have essential information
+          // only add if we have essential information
           if (business.name && (business.phone || (business.address && business.address.city))) {
             results.push(business);
           }
@@ -388,7 +400,7 @@ class YellowPagesScraper {
       return this.formatBusinessData(businesses);
       
     } finally {
-      // Always close the page
+      // always close the page
       if (page && !page.isClosed()) {
         await page.close();
       }
@@ -434,15 +446,15 @@ class YellowPagesScraper {
         notes: `Imported via Business Finder Tool on ${new Date().toLocaleDateString()}`
       };
 
-      // Debug log to verify data structure
-      console.log('Formatted business data:', {
-        name: formattedBusiness.businessName,
-        type: formattedBusiness.typeOfBusiness,
-        phone: formattedBusiness.businessPhone,
-        website: formattedBusiness.websiteUrl,
-        hasWebsite: formattedBusiness.hasWebsite,
-        address: formattedBusiness.address
-      });
+      // // debug log to verify data structure
+      // console.log('Formatted business data:', {
+      //   name: formattedBusiness.businessName,
+      //   type: formattedBusiness.typeOfBusiness,
+      //   phone: formattedBusiness.businessPhone,
+      //   website: formattedBusiness.websiteUrl,
+      //   hasWebsite: formattedBusiness.hasWebsite,
+      //   address: formattedBusiness.address
+      // });
 
       return formattedBusiness;
     });
