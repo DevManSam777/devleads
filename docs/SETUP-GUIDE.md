@@ -772,48 +772,111 @@ Deploy DevLeads to any hosting platform that supports Docker. Our demo site is d
 
 ## Web Forms Integration (Optional but highly recommended)
 
-After your DevLeads application is deployed, you can add web forms to your website to automatically capture leads. The styles are customizable, light and dark mode support, and quick and easy to embed in any website.
+After your DevLeads application is deployed, you can add web forms to your website to automatically capture leads. Forms are available as the **@devmansam/forms** package with multiple installation options.
 
 ### Choose Your Web Form
 
 **Need a simple contact form?** → Use **Minimalist Contact Form**  
 **Need detailed business inquiries?** → Use **Full Web Inquiry Form**
 
+### Installation Methods
+
+#### Method 1: NPM with Bundler (React, Vue, Angular)
+
+For projects with build systems:
+
+```bash
+npm install @devmansam/forms
+```
+
+```javascript
+import '@devmansam/forms';
+// Forms available as <contact-form> and <web-inquiry-form>
+```
+
+#### Method 2: NPM without Bundler
+
+Use npm but without a build tool:
+
+```bash
+npm install @devmansam/forms
+```
+
+```html
+<script type="importmap">
+{
+  "imports": {
+    "@devmansam/forms": "./node_modules/@devmansam/forms/index.js"
+  }
+}
+</script>
+
+<script type="module">
+  import '@devmansam/forms';
+</script>
+```
+
+#### Method 3: CDN
+
+Add a script tag to your HTML. No npm, no build tools.
+
+**Minimalist Contact Form:**
+```html
+<contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/contact-form.js" defer></script>
+```
+
+**Full Web Inquiry Form:**
+```html
+<web-inquiry-form api-url="https://your-devleads-api.com/api/leads"></web-inquiry-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/web-inquiry-form.js" defer></script>
+```
+
+Works in WordPress, static HTML, PHP, ASP.NET, Squarespace, Wix, any website.
+
 ### Option 1: Minimalist Contact Form
 
 ![Min form](../dashboard/assets/contact_forms/minimal_form/min_form.png)
 
-**Basic Setup:**
+**Basic Setup (CDN):**
 
 ```html
-<script
-  src="https://cdn.jsdelivr.net/gh/DevManSam777/minimalist-contact-form@main/contact-form.js"
-  defer
-></script>
 <contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/contact-form.js" defer></script>
 ```
 
-**Repository**: https://github.com/DevManSam777/minimalist-contact-form  
-_See the contact form's README for customization options and styling guidance_
+**Features:**
+- Simple 5-field contact form
+- Lightweight implementation
+- Dark/light mode support
+- Fully customizable styling
+- Real-time validation
+- Phone number auto-formatting
 
 ### Option 2: Full Web Inquiry Form
 
 ![Full form](../dashboard/assets/contact_forms/full_form/form1.png)
 
-**Basic Setup:**
+**Basic Setup (CDN):**
 
 ```html
-<script
-  src="https://cdn.jsdelivr.net/gh/DevManSam777/web_inquiry_form@main/web-inquiry-form.js"
-  defer
-></script>
-<web-inquiry-form
-  api-url="https://your-devleads-api.com/api/leads"
-></web-inquiry-form>
+<web-inquiry-form api-url="https://your-devleads-api.com/api/leads"></web-inquiry-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/web-inquiry-form.js" defer></script>
 ```
 
-**Repository**: https://github.com/DevManSam777/web_inquiry_form  
-_See the web inquiry form's README for customization options and styling guidance_
+**Features:**
+- Multi-step form with 5 steps
+- Comprehensive business data collection
+- Billing address capture
+- Service selection
+- Progress indicator
+- Review step before submission
+
+### Package Information
+
+**NPM Package**: [@devmansam/forms](https://www.npmjs.com/package/@devmansam/forms)  
+**Repository**: https://github.com/DevManSam777/forms  
+**Documentation**: See the [forms repository README](https://github.com/DevManSam777/forms#readme) for complete customization options, styling guides, and advanced features
 
 ### Important Notes
 

@@ -2545,6 +2545,61 @@ Choose between two web components to collect inquiries on your website and autom
 **Need a simple contact form?** → Use **Minimalist Contact Form**  
 **Need detailed business inquiries?** → Use **Full Web Inquiry Form**
 
+### Installation Methods
+
+#### Method 1: NPM with Bundler (React, Vue, Angular)
+
+For projects with build systems:
+
+\`\`\`bash
+npm install @devmansam/forms
+\`\`\`
+
+\`\`\`javascript
+import '@devmansam/forms';
+// Forms available as <contact-form> and <web-inquiry-form>
+\`\`\`
+
+#### Method 2: NPM without Bundler
+
+Use npm but without a build tool:
+
+\`\`\`bash
+npm install @devmansam/forms
+\`\`\`
+
+\`\`\`html
+<script type="importmap">
+{
+  "imports": {
+    "@devmansam/forms": "./node_modules/@devmansam/forms/index.js"
+  }
+}
+</script>
+
+<script type="module">
+  import '@devmansam/forms';
+</script>
+\`\`\`
+
+#### Method 3: CDN
+
+Add a script tag to your HTML. No npm, no build tools.
+
+**Minimalist Contact Form:**
+\`\`\`html
+<contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/contact-form.js" defer></script>
+\`\`\`
+
+**Full Web Inquiry Form:**
+\`\`\`html
+<web-inquiry-form api-url="https://your-devleads-api.com/api/leads"></web-inquiry-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/web-inquiry-form.js" defer></script>
+\`\`\`
+
+Works in WordPress, static HTML, PHP, ASP.NET, Squarespace, Wix, any website.
+
 ### Option 1: Minimalist Contact Form
 
 ![Min form](../dashboard/assets/contact_forms/minimal_form/min_form.png)
@@ -2570,9 +2625,6 @@ Choose between two web components to collect inquiries on your website and autom
 
 #### Setup Instructions
 See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional) for implementation details.
-
-#### Repository
-**Source**: https://github.com/DevManSam777/minimalist-contact-form
 
 ### Option 2: Full Web Inquiry Form
 
@@ -2607,9 +2659,6 @@ See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration
 
 #### Setup Instructions
 See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional) for implementation details.
-
-#### Repository  
-**Source**: https://github.com/DevManSam777/web_inquiry_form
 
 ### Integration with DevLeads
 
@@ -2679,7 +2728,7 @@ Ensure your DevLeads application is:
     <h1>Get In Touch</h1>
     <contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
     
-    <script src="https://raw.githack.com/DevManSam777/minimalist-contact-form/main/contact-form.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/contact-form.js" defer></script>
 </body>
 </html>
 \`\`\`
@@ -2695,7 +2744,7 @@ Ensure your DevLeads application is:
     <h1>Start Your Project</h1>
     <web-inquiry-form api-url="https://your-devleads-api.com/api/leads"></web-inquiry-form>
     
-    <script src="https://raw.githack.com/DevManSam777/web_inquiry_form/main/web-inquiry-form.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/web-inquiry-form.js" defer></script>
 </body>
 </html>
 \`\`\`

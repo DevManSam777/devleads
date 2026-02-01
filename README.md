@@ -31,8 +31,9 @@ Deployed via Docker for reliable, scalable production hosting.
 - Advanced search, filtering, and status management
 - Automated email notifications and confirmations for web form submissions
 - Document management with PDF uploads
-- Import/Export of business hitlists
-= Export of single or bulk leads
+- Import/Export of business hitlists as JSON or CSV
+- Export leads individually or in bulk as JSON or CSV
+- Flexible field mapping for data imports with duplicate detection
 
 ### Professional Form Builder
 - Create contracts, proposals, invoices with built-in Markdown editor

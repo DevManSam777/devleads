@@ -14,9 +14,10 @@ Guide for features and functionality organized by application pages.
 4. [Forms Page](#form-templates-page)
 5. [Resources Page](#resources-page)
 6. [Settings Page](#settings-page)
-7. [Web Forms Integration](#web-forms-integration)
-8. [Email Notifications](#email-notifications)
-9. [Tips & Tricks](#tips--tricks)
+7. [Export Functionality](#export-functionality)
+8. [Web Forms Integration](#web-forms-integration)
+9. [Email Notifications](#email-notifications)
+10. [Tips & Tricks](#tips--tricks)
 
 ---
 
@@ -901,7 +902,7 @@ That's it! The Business Finder is designed to be simple - find businesses and ad
 
 ## Web Forms Integration
 
-Choose between two web components to collect inquiries on your website and automatically create leads in DevLeads.
+Choose between two web components to collect inquiries on your website and automatically create leads in DevLeads. Both forms are available as the **@devmansam/forms** npm package.
 
 ### Choose Your Web Form
 
@@ -909,6 +910,61 @@ Choose between two web components to collect inquiries on your website and autom
 
 **Need a simple contact form?** → Use **Minimalist Contact Form**  
 **Need detailed business inquiries?** → Use **Full Web Inquiry Form**
+
+### Installation Methods
+
+#### Method 1: NPM with Bundler (React, Vue, Angular)
+
+For projects using build systems:
+
+```bash
+npm install @devmansam/forms
+```
+
+```javascript
+import '@devmansam/forms';
+// Forms available as <contact-form> and <web-inquiry-form>
+```
+
+#### Method 2: NPM without Bundler
+
+Use npm but without a build tool:
+
+```bash
+npm install @devmansam/forms
+```
+
+```html
+<script type="importmap">
+{
+  "imports": {
+    "@devmansam/forms": "./node_modules/@devmansam/forms/index.js"
+  }
+}
+</script>
+
+<script type="module">
+  import '@devmansam/forms';
+</script>
+```
+
+#### Method 3: CDN
+
+Add a script tag directly to your HTML. No npm, no build tools, no configuration.
+
+**Minimalist Contact Form:**
+```html
+<contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/contact-form.js" defer></script>
+```
+
+**Full Web Inquiry Form:**
+```html
+<web-inquiry-form api-url="https://your-devleads-api.com/api/leads"></web-inquiry-form>
+<script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/web-inquiry-form.js" defer></script>
+```
+
+Works in any HTML file - WordPress, static sites, PHP, ASP.NET, anywhere.
 
 ### Option 1: Minimalist Contact Form
 
@@ -922,9 +978,11 @@ Choose between two web components to collect inquiries on your website and autom
 - **Auto-formatting**: Phone number formatting
 - **Theme Detection**: Automatic dark/light mode
 - **Real-time Validation**: Immediate feedback
-- **Customizable**: Customizable styling for light and dark themes
+- **Customizable**: Full color and styling customization via HTML attributes
 - **Professional Design**: Clean, modern appearance
-- **Toast Notifications**:  Built-in toast notifications for successful and unsuccessful form submissions
+- **Toast Notifications**: Built-in toast notifications for form submissions
+- **Accessibility**: ARIA labels, screen reader support, keyboard navigation
+- **Dark Mode**: Built-in dark mode support with customizable colors
 
 #### Form Fields
 - First Name (required)
@@ -934,10 +992,7 @@ Choose between two web components to collect inquiries on your website and autom
 - Message (required)
 
 #### Setup Instructions
-See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional) for implementation details.
-
-#### Repository
-**Source**: https://github.com/DevManSam777/minimalist-contact-form
+See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional-but-highly-recommended) for implementation details and customization options.
 
 ### Option 2: Full Web Inquiry Form
 
@@ -954,27 +1009,37 @@ See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration
 **Best for:** Business websites, detailed project inquiries, comprehensive lead data
 
 #### Features
-- **Multi-step Process**: Guided form completion with review step
+- **Multi-step Process**: Guided 5-step form completion with review step
 - **Comprehensive Fields**: Business details, billing address, project requirements
 - **Conditional Logic**: Show/hide fields based on selections
-- **Advanced Validation**: Complex form validation
-- **Theme Support**: Light/dark mode
-- **Customizable**: Customizable styling 
-- **Professional Layout**: Business-focused design
-- **Toast Notifications**:  Built-in toast notifications for successful and unsuccessful form submissions
+- **Advanced Validation**: Complex form validation with helpful error messages
+- **Theme Support**: Light/dark mode with customizable colors
+- **Customizable**: Full color and styling customization via HTML attributes
+- **Professional Layout**: Business-focused design with progress indicators
+- **Toast Notifications**: Built-in toast notifications for form submissions
+- **Accessibility**: ARIA labels, screen reader support, keyboard navigation
+- **Dark Mode**: Built-in dark mode support with customizable colors
 
 #### Form Fields
-- **Personal**: First name, last name, email, phone, extension
-- **Business**: Company name, business phone, business email
-- **Project**: Service type, budget, timeline, requirements
-- **Billing**: Complete address information
-- **Preferences**: Contact method, communication preferences
+- **Step 1 - Personal**: First name, last name, email, phone, phone extension
+- **Step 2 - Business**: Company name, business phone, business email
+- **Step 3 - Address**: Billing address with street, city, state, ZIP, country
+- **Step 4 - Service**: Service type selection, budget, timeline, requirements
+- **Step 5 - Review**: Review all information before submission
 
 #### Setup Instructions
-   - See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional) for implementation details.
+See [Setup Guide - Web Forms Integration](./SETUP-GUIDE.md#web-forms-integration-optional-but-highly-recommended) for implementation details and customization options.
 
-#### Repository  
-   - **Source**: https://github.com/DevManSam777/web_inquiry_form
+### Package Information
+
+**NPM Package**: [@devmansam/forms](https://www.npmjs.com/package/@devmansam/forms)  
+**GitHub Repository**: [DevManSam777/forms](https://github.com/DevManSam777/forms)  
+**Documentation**: See the [forms repository README](https://github.com/DevManSam777/forms#readme) for:
+- Complete customization attribute reference
+- Color and styling options
+- Advanced features and examples
+- Accessibility details
+- Event handling and custom integrations
 
 ### Integration with DevLeads
 
@@ -1033,7 +1098,7 @@ Ensure your DevLeads application is:
 
 #### Step 3: Add Form to Website
 
-**For Minimalist Form:**
+**For Minimalist Form (CDN Example):**
 ```html
 <!DOCTYPE html>
 <html>
@@ -1044,12 +1109,12 @@ Ensure your DevLeads application is:
     <h1>Get In Touch</h1>
     <contact-form endpoint="https://your-devleads-api.com/api/leads"></contact-form>
     
-    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/minimalist-contact-form@main/contact-form.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/contact-form.js" defer></script>
 </body>
 </html>
 ```
 
-**For Full Inquiry Form:**
+**For Full Inquiry Form (CDN Example):**
 ```html
 <!DOCTYPE html>
 <html>
@@ -1060,9 +1125,19 @@ Ensure your DevLeads application is:
     <h1>Start Your Project</h1>
     <web-inquiry-form api-url="https://your-devleads-api.com/api/leads"></web-inquiry-form>
     
-    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/web_inquiry_form@main/web-inquiry-form.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/DevManSam777/forms@main/web-inquiry-form.js" defer></script>
 </body>
 </html>
+```
+
+**For NPM/Bundler Projects:**
+```bash
+npm install @devmansam/forms
+```
+
+```javascript
+import '@devmansam/forms';
+// Now use <contact-form> and <web-inquiry-form> components
 ```
 
 #### Step 4: Test Integration
@@ -1272,6 +1347,250 @@ Customize application behavior and user preferences.
    - Example display updates to show current date in selected format
    - Format applies to dates throughout the application
    - Preference is automatically saved
+
+---
+
+## Export Functionality
+
+Export your data in multiple formats for analysis, backup, or integration with other tools.
+
+### Key Features
+
+- **Multiple Formats**: Export as JSON or CSV
+- **Multiple Scopes**: Export individual items, entire lists, or all data at once
+- **Complete Data**: Exports include all associated information (payments, notes, contact details)
+- **Easy Download**: Single-click exports that automatically download to your computer
+- **Professional Naming**: Automatically generated filenames with timestamps for organization
+
+### Export Options
+
+#### 1. Bulk Lead Export (All Leads at Once)
+
+Export all leads from your dashboard in a single file.
+
+**How to Use:**
+1. Navigate to the **Dashboard** page
+2. Click the **"Export All"** button (top toolbar)
+3. In the export modal, choose:
+   - **JSON Format**: Structured data format for integration and analysis
+   - **CSV Format**: Spreadsheet format compatible with Excel and Google Sheets
+4. File downloads automatically with timestamp
+
+**Included Data:**
+- Lead ID, name, email, phone
+- Business information (company, phone, email, website)
+- Billing address (street, city, state, ZIP, country)
+- Service details, project status, timeline
+- All payment records (amounts, dates, notes)
+- Customer messages and internal notes
+- Creation and last contact dates
+
+**Filename Format:**
+- JSON: `devleads-leads-{timestamp}.json`
+- CSV: `devleads-leads-{timestamp}.csv`
+
+#### 2. Individual Lead Export
+
+Export a single lead's complete information.
+
+**How to Use:**
+1. Navigate to the **Dashboard** page
+2. Click on a lead to open its detail view
+3. Click the **"Export"** button in the lead detail window
+4. Choose format:
+   - **JSON Format**: Complete structured data
+   - **CSV Format**: Single-row spreadsheet format
+5. File downloads automatically
+
+**Included Data:**
+- All lead information (personal and business details)
+- Complete contact information
+- Full address details
+- Service and project information
+- All payment history with dates and amounts
+- Custom notes and messages
+- Status and timeline information
+
+**Filename Format:**
+- JSON: `devleads-lead-{firstName}-{lastName}-{timestamp}.json`
+- CSV: `devleads-lead-{firstName}-{lastName}-{timestamp}.csv`
+
+#### 3. Hitlist Import (Add Business Prospects)
+
+Import business prospects into a hitlist from CSV or JSON files.
+
+**How to Use:**
+1. Navigate to the **Hitlists** page
+2. Select a hitlist to view businesses
+3. Click the **"Import Data"** button
+4. Select a CSV or JSON file containing business data
+5. System validates and processes the file:
+   - Duplicate checks prevent adding duplicate businesses
+   - Progress bar shows import status
+   - Batch processing handles large files efficiently
+6. Import results display (successes, duplicates skipped, failures)
+
+**Supported File Formats:**
+
+**CSV Format Requirements:**
+- Headers must include at least "Business Name" (required)
+- Flexible header names: Accept variations like "businessname", "name"
+- Flexible field names map to standard business fields
+- Common headers: Business Phone, Business Email, Website, Address, City, State, ZIP, Type
+
+**Example CSV Structure:**
+```
+Business Name,Business Type,Contact Name,Phone,Email,Website,Street Address,City,State,ZIP Code
+ABC Corp,Technology,John Smith,(555) 123-4567,john@abc.com,www.abc.com,123 Main St,New York,NY,10001
+```
+
+**JSON Format Requirements:**
+- Must be a valid JSON array of business objects
+- Business Name field is required for each object
+- Flexible field names (auto-mapped to standard fields)
+
+**Example JSON Structure:**
+```json
+[
+  {
+    "businessName": "ABC Corp",
+    "businessType": "Technology",
+    "contactName": "John Smith",
+    "businessPhone": "(555) 123-4567",
+    "businessEmail": "john@abc.com",
+    "website": "www.abc.com",
+    "streetAddress": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001"
+  }
+]
+```
+
+**Automatic Field Mapping:**
+The system intelligently maps CSV columns to the correct fields, supporting variations like:
+- `Business Name` → `businessName`
+- `Business Phone` → `phone`
+- `Business Email` → `email`
+- `Street Address` → `streetAddress`
+- `ZIP Code` → `zipCode`
+
+**Import Features:**
+- **Duplicate Detection**: Skips businesses already in the hitlist
+- **Batch Processing**: Handles large imports efficiently with delays to prevent rate limiting
+- **Progress Tracking**: Real-time progress bar and status updates
+- **Error Handling**: Reports successes, failures, and duplicates
+- **Data Validation**: Ensures required fields are present
+
+#### 4. Hitlist Export (Business Prospects)
+
+Export an entire business hitlist or individual prospects.
+
+**How to Use:**
+1. Navigate to the **Hitlists** page
+2. Select a hitlist to view businesses
+3. Click the **"Export Hitlist"** button
+4. Choose format:
+   - **JSON Format**: Full structured prospect data
+   - **CSV Format**: Spreadsheet format for analysis
+5. File downloads automatically
+
+**Included Data for Each Business:**
+- Business name and type
+- Contact person name
+- Business phone (with extension if available)
+- Business email and website
+- Complete address (street, apt/unit, city, state, ZIP, country)
+- Prospect status and priority level
+- Last contacted date
+- Internal notes and follow-up information
+
+**Filename Format:**
+- JSON: `{hitlist-name}-prospects.json`
+- CSV: `{hitlist-name}-prospects.csv`
+
+### Export Formats Explained
+
+#### JSON Format
+
+**Best For:**
+- Data integration with other applications
+- Backup and archiving
+- Complex data analysis
+- API integrations
+- Preserving complete data structure
+
+**Example Structure:**
+```json
+[
+  {
+    "firstName": "John",
+    "lastName": "Smith",
+    "email": "john@example.com",
+    "phone": "(555) 123-4567",
+    "businessName": "ABC Corp",
+    "payments": [
+      {
+        "amount": 500,
+        "paymentDate": "2024-01-15",
+        "notes": "Initial deposit"
+      }
+    ],
+    "status": "In Progress",
+    "createdAt": "2024-01-10T08:30:00Z"
+  }
+]
+```
+
+#### CSV Format
+
+**Best For:**
+- Spreadsheet analysis in Excel or Google Sheets
+- Quick data review
+- Sharing with non-technical team members
+- Importing to CRM or other business tools
+- Creating reports and summaries
+
+**Example Structure:**
+```
+Lead ID,First Name,Last Name,Email,Phone,Business Name,Status,Budget,Paid Amount,Remaining Balance
+123abc,John,Smith,john@example.com,(555) 123-4567,ABC Corp,In Progress,5000,1000,4000
+```
+
+### Use Cases
+
+1. **Backup & Archive**
+   - Regularly export all leads for backup purposes
+   - Keep historical records of your business pipeline
+   - Archive completed projects and closed leads
+
+2. **External Analysis**
+   - Export to Excel for financial analysis
+   - Share lead data with team members or consultants
+   - Create custom reports and summaries
+
+3. **CRM Migration**
+   - Export leads in CSV format for import to other CRM systems
+   - Transition to new tools without losing data
+   - Maintain historical records during system changes
+
+4. **Client Delivery**
+   - Export prospect lists from hitlists for client sharing
+   - Provide leads in standardized formats
+   - Generate reports for business stakeholders
+
+5. **Data Integration**
+   - Use JSON exports for API integrations
+   - Sync data with external business tools
+   - Automate workflows with exported data
+
+### Tips
+
+- **Timestamp Naming**: All exports include timestamps to prevent filename conflicts and maintain organization
+- **Complete Data**: Exports include all associated information, not just basic contact details
+- **No Data Loss**: Exports preserve all custom data including internal notes and payment details
+- **Regular Backups**: Export all leads regularly as part of your backup strategy
+- **Format Choice**: Use JSON for data integration and CSV for spreadsheet analysis
 
 ---
 
