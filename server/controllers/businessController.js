@@ -66,6 +66,59 @@ exports.updateBusiness = async (req, res) => {
   }
 };
 
+// move business to different hitlist
+exports.moveBusiness = async (req, res) => {
+  try {
+    const { newHitlistId } = req.body;
+
+    if (!newHitlistId) {
+      return res.status(400).json({ message: "newHitlistId is required" });
+    }
+
+    // get the business
+    const business = await Business.findById(req.params.id);
+    if (!business) {
+      return res.status(404).json({ message: "Business not found" });
+    }
+
+    // verify the new hitlist exists
+    const newHitlist = await Hitlist.findById(newHitlistId);
+    if (!newHitlist) {
+      return res.status(404).json({ message: "Target hitlist not found" });
+    }
+
+    const oldHitlistId = business.hitlistId;
+
+    // only move if moving to a different hitlist
+    if (oldHitlistId.toString() === newHitlistId.toString()) {
+      return res
+        .status(400)
+        .json({ message: "Business is already in this hitlist" });
+    }
+
+    // update the business with new hitlistId
+    business.hitlistId = newHitlistId;
+    const updatedBusiness = await business.save();
+
+    // remove business reference from old hitlist
+    await Hitlist.findByIdAndUpdate(oldHitlistId, {
+      $pull: { businesses: req.params.id },
+      $set: { lastModified: new Date() },
+    });
+
+    // add business reference to new hitlist
+    await Hitlist.findByIdAndUpdate(newHitlistId, {
+      $push: { businesses: req.params.id },
+      $set: { lastModified: new Date() },
+    });
+
+    res.json(updatedBusiness);
+  } catch (error) {
+    console.error("Error moving business:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 // delete business
 exports.deleteBusiness = async (req, res) => {
   try {

@@ -14,6 +14,7 @@ router.delete('/:id', hitlistController.deleteHitlist);
 router.get('/:hitlistId/businesses', businessController.getBusinessesByHitlist);
 router.post('/:hitlistId/businesses', businessController.createBusiness);
 router.put('/businesses/:id', businessController.updateBusiness);
+router.patch('/businesses/:id/move', businessController.moveBusiness);
 router.delete('/businesses/:id', businessController.deleteBusiness);
 
 module.exports = router;

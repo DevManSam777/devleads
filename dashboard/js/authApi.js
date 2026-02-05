@@ -310,7 +310,7 @@ async function makeAuthenticatedCall(endpoint, method, data, user) {
       },
     };
 
-    if (data && (method === "POST" || method === "PUT")) {
+    if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
       options.body = JSON.stringify(data);
     }
 
@@ -400,6 +400,8 @@ const authApi = {
     retryWithBackoff(() => safeApiCall(() => apiCall(endpoint, "POST", data))),
   put: (endpoint, data) =>
     retryWithBackoff(() => safeApiCall(() => apiCall(endpoint, "PUT", data))),
+  patch: (endpoint, data) =>
+    retryWithBackoff(() => safeApiCall(() => apiCall(endpoint, "PATCH", data))),
   delete: (endpoint) =>
     retryWithBackoff(() => safeApiCall(() => apiCall(endpoint, "DELETE"))),
 };

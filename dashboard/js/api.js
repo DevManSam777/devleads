@@ -513,6 +513,19 @@ async function updateBusiness(businessId, businessData) {
   }
 }
 
+async function moveBusiness(businessId, newHitlistId) {
+  try {
+    const data = await authApi.patch(
+      `/hitlists/businesses/${businessId}/move`,
+      { newHitlistId }
+    );
+    return data;
+  } catch (error) {
+    console.error("Error moving business:", error);
+    throw error;
+  }
+}
+
 async function deleteBusiness(businessId) {
   try {
     const data = await authApi.delete(`/hitlists/businesses/${businessId}`);
@@ -560,5 +573,6 @@ export {
   fetchBusinessesByHitlist,
   createBusiness,
   updateBusiness,
+  moveBusiness,
   deleteBusiness,
 };

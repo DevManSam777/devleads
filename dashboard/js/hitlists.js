@@ -537,6 +537,15 @@ function attachBusinessActionListeners(businesses) {
     });
   });
 
+  businessesList.querySelectorAll(".move-business").forEach((button) => {
+    button.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const businessId = this.closest(".business-item").dataset.id;
+      const business = businesses.find((b) => b._id === businessId);
+      openMoveBusinessModal(business);
+    });
+  });
+
   businessesList.querySelectorAll(".delete-business").forEach((button) => {
     button.addEventListener("click", function (e) {
       e.stopPropagation();
@@ -1995,6 +2004,9 @@ function renderBusinesses(businesses) {
       <button class="btn-icon edit-business" title="Edit">
         <i class="fas fa-edit"></i>
       </button>
+      <button class="btn-icon move-business" title="Move to Different Hitlist">
+        <i class="fas fa-arrow-right"></i>
+      </button>
       ${
         business.status !== "converted"
           ? `<button class="btn-icon convert-to-lead" title="Convert - Send lead to Dashboard">
@@ -2014,6 +2026,113 @@ function renderBusinesses(businesses) {
     .join("");
 
   attachBusinessActionListeners(businesses);
+}
+
+async function openMoveBusinessModal(business) {
+  if (!business) {
+    console.error("No business data provided");
+    return;
+  }
+
+  // create a modal dynamically or use an existing one
+  let modal = document.getElementById("moveBusinessModal");
+  if (!modal) {
+    // create modal if it doesn't exist
+    modal = document.createElement("div");
+    modal.id = "moveBusinessModal";
+    modal.className = "modal";
+    modal.innerHTML = `
+      <div class="modal-content small-modal">
+        <span class="close-modal" id="closeMoveBusinessModal">&times;</span>
+        <div class="modal-header">
+          <h3>Move Business to Different Hitlist</h3>
+          <p id="moveBusinessName"></p>
+        </div>
+        <form id="moveBusinessForm">
+          <div class="form-group">
+            <label for="moveBusinessHitlist" class="required">Select Target Hitlist</label>
+            <select id="moveBusinessHitlist" required>
+              <option value="">Choose a hitlist...</option>
+            </select>
+          </div>
+          <div class="modal-actions">
+            <button type="button" id="cancelMoveBtn" class="btn btn-outline">Cancel</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Move</button>
+          </div>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // close button listener
+    document.getElementById("closeMoveBusinessModal").addEventListener("click", function () {
+      modal.style.display = "none";
+    });
+
+    // cancel button listener
+    document.getElementById("cancelMoveBtn").addEventListener("click", function () {
+      modal.style.display = "none";
+    });
+
+    // close on outside click
+    window.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  }
+
+  // populate business name
+  document.getElementById("moveBusinessName").textContent = `Moving: ${business.businessName}`;
+
+  // populate hitlist options
+  const select = document.getElementById("moveBusinessHitlist");
+  select.innerHTML = '<option value="">Choose a hitlist...</option>';
+
+  // filter out the current hitlist
+  const otherHitlists = allHitlists.filter((h) => h._id !== business.hitlistId);
+
+  otherHitlists.forEach((hitlist) => {
+    const option = document.createElement("option");
+    option.value = hitlist._id;
+    option.textContent = hitlist.name;
+    select.appendChild(option);
+  });
+
+  // handle form submission
+  const form = document.getElementById("moveBusinessForm");
+  const existingHandler = form.onsubmit;
+
+  form.onsubmit = async function (e) {
+    e.preventDefault();
+
+    const newHitlistId = select.value;
+    if (!newHitlistId) {
+      Utils.showToast("Please select a hitlist");
+      return;
+    }
+
+    try {
+      await API.moveBusiness(business._id, newHitlistId);
+      Utils.showToast(`Business moved successfully`);
+
+      // close modal
+      modal.style.display = "none";
+
+      // refresh the current hitlist
+      if (currentHitlistId) {
+        openBusinessListModal(currentHitlistId);
+      }
+
+      // refresh hitlists to update counts
+      fetchAndRenderHitlists();
+    } catch (error) {
+      console.error("Error moving business:", error);
+      Utils.showToast("Error moving business");
+    }
+  };
+
+  modal.style.display = "block";
 }
 
 function updateBusinessViewModalActions(business) {
@@ -2038,6 +2157,18 @@ function updateBusinessViewModalActions(business) {
     openEditBusinessModal(business);
   });
 
+  // create Move button
+  const moveButton = document.createElement("button");
+  moveButton.type = "button";
+  moveButton.className = "btn btn-primary";
+  moveButton.innerHTML = '<i class="fas fa-arrow-right"></i> Move';
+  moveButton.addEventListener("click", function () {
+    // close the view modal
+    document.getElementById("businessViewModal").style.display = "none";
+    // open the move modal
+    openMoveBusinessModal(business);
+  });
+
   // create Delete button
   const deleteButton = document.createElement("button");
   deleteButton.type = "button";
@@ -2052,6 +2183,7 @@ function updateBusinessViewModalActions(business) {
 
   // add buttons to container
   actionsContainer.appendChild(editButton);
+  actionsContainer.appendChild(moveButton);
   actionsContainer.appendChild(deleteButton);
 }
 
