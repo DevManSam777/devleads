@@ -406,7 +406,8 @@ X
 ……………………………………………………
 Signed by  (Developer), {{currentDate}}  
   
-X……………………………………………………
+X  
+……………………………………………………  
 Signed by {{fullName}}, {{currentDate}}  
   
   
