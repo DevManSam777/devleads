@@ -1132,15 +1132,15 @@ Please select the option you prefer with an "X" and sign below:
   <tr>
     <td style="border: 1px solid black; padding: 15px; width: 50%;">
       <strong>Client Information</strong><br><br>
-      **Name:** {{fullName}}<br><br>
-      **Signature:** _____________________<br><br>
-      **Date Signed:** _____________________
+      <strong>Name:</strong> {{fullName}}<br><br>
+      <strong>Signature:</strong> _____________________<br><br>
+      <strong>Date Signed:</strong> _____________________
     </td>
     <td style="border: 1px solid black; padding: 15px; width: 50%;">
       <strong>Service Provider</strong><br><br>
-      **Name:** [Your Name]<br><br>
-      **Signature:** _____________________<br><br>
-      **Date Signed:** _____________________
+      <strong>Name:</strong> [Your Name]<br><br>
+      <strong>Signature:</strong> _____________________<br><br>
+      <strong>Date Signed:</strong> _____________________
     </td>
   </tr>
 </table>
@@ -1285,7 +1285,7 @@ Please select the option you prefer with an "X" and sign below:
 
 1. The Service Provider warrants and represents that it has full capacity and authority to enter into the Agreement and that the Services performed by the Service Provider will be rendered in accordance with sound professional practices.
 
-2. The Client warrants and represents that it has full capacity and authority to enter into the Agreement and has the ability, including relevant permissions, licences and consents necessary to perform its obligations in terms of the Agreement.
+2. The Client warrants and represents that it has full capacity and authority to enter into the Agreement and has the ability, including relevant permissions, licenses and consents necessary to perform its obligations in terms of the Agreement.
 
 ## 10. INDEPENDENT CONTRACTORS
 
@@ -1333,19 +1333,19 @@ The Parties duly execute this Agreement by their signatures below:
   <tr>
     <td style="border: 1px solid black; padding: 15px; width: 50%;">
       <strong>Client</strong><br><br>
-      **Company:** {{businessName}}<br><br>
-      **Name:** {{fullName}}<br><br>
-      **Title:** _____________________<br><br>
-      **Date:** _____________________<br><br>
-      **Signature:** _____________________
+      <strong>Company:</strong> {{businessName}}<br><br>
+      <strong>Name:</strong> {{fullName}}<br><br>
+      <strong>Title:</strong> _____________________<br><br>
+      <strong>Date:</strong> _____________________<br><br>
+      <strong>Signature:</strong> _____________________
     </td>
     <td style="border: 1px solid black; padding: 15px; width: 50%;">
       <strong>Service Provider</strong><br><br>
-      **Company:** [Your Company Name]<br><br>
-      **Name:** [Your Name]<br><br>
-      **Title:** _____________________<br><br>
-      **Date:** _____________________<br><br>
-      **Signature:** _____________________
+      <strong>Company:</strong> [Your Company Name]<br><br>
+      <strong>Name:</strong> [Your Name]<br><br>
+      <strong>Title:</strong> _____________________<br><br>
+      <strong>Date:</strong> _____________________<br><br>
+      <strong>Signature:</strong> _____________________
     </td>
   </tr>
 </table>
